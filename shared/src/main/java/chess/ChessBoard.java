@@ -7,7 +7,7 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] squares = new ChessPiece[8][8];
+    private ChessPiece[][] gameBoard = new ChessPiece[8][8]; //in our chess bored class there
     public ChessBoard() {
         
     }
@@ -20,7 +20,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece)
     {
-        squares[position.getRow()][position.getColumn()] = piece;
+        gameBoard[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
@@ -31,7 +31,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow()][position.getColumn()];
+        return gameBoard[position.getRow()][position.getColumn()];
     }
 
     /**
