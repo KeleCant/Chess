@@ -32,8 +32,10 @@ public class ChessMove {
      */
     public ChessPiece.PieceType getPromotionPiece() {
         //write promotion code here
-        if (promotionPiece == ChessPiece.PieceType.PAWN) {
-
+        if (promotionPiece == ChessPiece.PieceType.PAWN && endPosition.getRow()==8) {
+            return ChessPiece.PieceType.QUEEN;
+        }
+        else if (promotionPiece == ChessPiece.PieceType.PAWN && endPosition.getRow()==1) {
             return ChessPiece.PieceType.QUEEN;
         }
         else{

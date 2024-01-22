@@ -53,7 +53,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        gameBoard[position.getRow()][position.getColumn()] = piece;
+        gameBoard[position.getRow()-1][position.getColumn()-1] = piece;
     }
     public void addPiece(int Row, int Col, ChessPiece piece) {
         gameBoard[Row][Col] = piece;
