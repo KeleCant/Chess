@@ -11,7 +11,6 @@ import java.util.Collection;
 public class ChessPiece {
     private ChessGame.TeamColor pieceColor;
     private ChessPiece.PieceType type;
-    private int timesMoved = 0;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -38,11 +37,23 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece.PieceType PieceType = board.getPiece(myPosition).getPieceType(); //reads the bored records our piece type
+        ChessGame.TeamColor PieceColor = board.getPiece(myPosition).getTeamColor();
         Collection<ChessMove> possibleMoves;
 
         //Pawn
         if (ChessPiece.PieceType.PAWN == PieceType){
+            if (PieceColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2){   //if white pawn hasn't moved condition
 
+            }
+            else if (PieceColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7){  //if black pawn hasn't moved condition
+
+            }
+            else if (PieceColor == ChessGame.TeamColor.WHITE){ //generic pawn move
+
+            }
+            else if (PieceColor == ChessGame.TeamColor.BLACK){ //generic pawn move
+
+            }
         }
         //Rook
         else if (ChessPiece.PieceType.ROOK == PieceType){
