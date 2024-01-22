@@ -16,10 +16,7 @@ public class ChessPiece {
         this.type = type;
     }
 
-    /**
-     * The various different chess piece options
-     */
-    public enum PieceType {
+    public enum PieceType { //The various different chess piece options
         KING,
         QUEEN,
         BISHOP,
@@ -28,17 +25,11 @@ public class ChessPiece {
         PAWN
     }
 
-    /**
-     * @return Which team this chess piece belongs to
-     */
-    public ChessGame.TeamColor getTeamColor() {
+    public ChessGame.TeamColor getTeamColor() { //return Which team this chess piece belongs to
         return pieceColor;
     }
 
-    /**
-     * @return which type of chess piece this piece is
-     */
-    public PieceType getPieceType() {
+    public PieceType getPieceType() { //return which type of chess piece this piece is
         return type;
     }
 
@@ -50,8 +41,19 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
         //implimnent moves here
         //the input is a board and a pos... the pos tells us the peice on the bored being moved
+        //get peice id from bored
+        //run through if statements, one for each enum
+        //something will have to read the avalible pos and return if the pos is ocucpied
+        //stop
+
+
+
+
+
+
         return null;
     }
 }
