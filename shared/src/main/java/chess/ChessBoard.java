@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -67,7 +70,11 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return gameBoard[position.getRow()][position.getColumn()];
+        return gameBoard[position.getRow()-1][position.getColumn()-1];
+    }
+
+    public boolean isOccupied(int row, int col) {
+        return gameBoard[row-1][col-1] != null;
     }
 
     /**
@@ -118,5 +125,20 @@ public class ChessBoard {
 
         //make it whites turn
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.equals(BlackRook1, that.BlackRook1) && Objects.equals(BlackRook2, that.BlackRook2) && Objects.equals(BlackBishop1, that.BlackBishop1) && Objects.equals(BlackBishop2, that.BlackBishop2) && Objects.equals(BlackKnight1, that.BlackKnight1) && Objects.equals(BlackKnight2, that.BlackKnight2) && Objects.equals(BlackQueen, that.BlackQueen) && Objects.equals(BlackKing, that.BlackKing) && Objects.equals(BlackPawn1, that.BlackPawn1) && Objects.equals(BlackPawn2, that.BlackPawn2) && Objects.equals(BlackPawn3, that.BlackPawn3) && Objects.equals(BlackPawn4, that.BlackPawn4) && Objects.equals(BlackPawn5, that.BlackPawn5) && Objects.equals(BlackPawn6, that.BlackPawn6) && Objects.equals(BlackPawn7, that.BlackPawn7) && Objects.equals(BlackPawn8, that.BlackPawn8) && Objects.equals(WhiteRook1, that.WhiteRook1) && Objects.equals(WhiteRook2, that.WhiteRook2) && Objects.equals(WhiteBishop1, that.WhiteBishop1) && Objects.equals(WhiteBishop2, that.WhiteBishop2) && Objects.equals(WhiteKnight1, that.WhiteKnight1) && Objects.equals(WhiteKnight2, that.WhiteKnight2) && Objects.equals(WhiteQueen, that.WhiteQueen) && Objects.equals(WhiteKing, that.WhiteKing) && Objects.equals(WhitePawn1, that.WhitePawn1) && Objects.equals(WhitePawn2, that.WhitePawn2) && Objects.equals(WhitePawn3, that.WhitePawn3) && Objects.equals(WhitePawn4, that.WhitePawn4) && Objects.equals(WhitePawn5, that.WhitePawn5) && Objects.equals(WhitePawn6, that.WhitePawn6) && Objects.equals(WhitePawn7, that.WhitePawn7) && Objects.equals(WhitePawn8, that.WhitePawn8) && Arrays.equals(gameBoard, that.gameBoard);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(BlackRook1, BlackRook2, BlackBishop1, BlackBishop2, BlackKnight1, BlackKnight2, BlackQueen, BlackKing, BlackPawn1, BlackPawn2, BlackPawn3, BlackPawn4, BlackPawn5, BlackPawn6, BlackPawn7, BlackPawn8, WhiteRook1, WhiteRook2, WhiteBishop1, WhiteBishop2, WhiteKnight1, WhiteKnight2, WhiteQueen, WhiteKing, WhitePawn1, WhitePawn2, WhitePawn3, WhitePawn4, WhitePawn5, WhitePawn6, WhitePawn7, WhitePawn8);
+        result = 31 * result + Arrays.hashCode(gameBoard);
+        return result;
     }
 }

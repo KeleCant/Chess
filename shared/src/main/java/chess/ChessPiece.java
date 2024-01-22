@@ -1,6 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -9,22 +12,37 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private final ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType type;
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    private ChessGame.TeamColor pieceColor;
+    private PieceType type;
+
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
 
-    public enum PieceType { //The various different chess piece options
-        KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN
+    /**
+     * The various different chess piece options
+     */
+    public enum PieceType {
+        KING,
+        QUEEN,
+        BISHOP,
+        KNIGHT,
+        ROOK,
+        PAWN
     }
 
-    public ChessGame.TeamColor getTeamColor() { //return Which team this chess piece belongs to
+    /**
+     * @return Which team this chess piece belongs to
+     */
+    public ChessGame.TeamColor getTeamColor() {
         return pieceColor;
     }
 
-    public PieceType getPieceType() { //return which type of chess piece this piece is
+    /**
+     * @return which type of chess piece this piece is
+     */
+    public PieceType getPieceType() {
         return type;
     }
 
@@ -36,45 +54,158 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece.PieceType PieceType = board.getPiece(myPosition).getPieceType(); //reads the bored records our piece type
+        //valuable that will return a collection of ChessMoves
+        //Collection<ChessMove> returnValue = new ArrayList<>();
+        var returnValue = new HashSet<ChessMove>();
+        //variable to determine what piece type this is
+        PieceType PieceType = board.getPiece(myPosition).getPieceType();
         ChessGame.TeamColor PieceColor = board.getPiece(myPosition).getTeamColor();
-        Collection<ChessMove> possibleMoves;
+        //variable that will be used to modify and add to the collection
+        ChessPosition newPosition;
 
-        //Pawn
-        if (ChessPiece.PieceType.PAWN == PieceType){
-            if (PieceColor == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2){   //if white pawn hasn't moved condition
-
-            }
-            else if (PieceColor == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7){  //if black pawn hasn't moved condition
-
-            }
-            else if (PieceColor == ChessGame.TeamColor.WHITE){ //generic pawn move
-
-            }
-            else if (PieceColor == ChessGame.TeamColor.BLACK){ //generic pawn move
-
-            }
-        }
-        //Rook
-        else if (ChessPiece.PieceType.ROOK == PieceType){
-
-        }
-        //Knight
-        else if (ChessPiece.PieceType.KNIGHT == PieceType){
-
-        }
         //Bishop
-        else if (ChessPiece.PieceType.BISHOP == PieceType){
+        if (PieceType == ChessPiece.PieceType.BISHOP) {
+            //up-right
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() + i > 8) {
+                    break;  //if boundaries are left, terminate
+                }
+                if (myPosition.getColumn() + i > 8) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() + i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() + i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
 
-        }
-        //Queen
-        else if (ChessPiece.PieceType.QUEEN == PieceType){
+            //down-right
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i < 1) {
+                    break;
+                }
+                if (myPosition.getColumn() + i > 8) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() + i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() + i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
 
+            //down-left
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i < 1) {
+                    break;
+                }
+                if (myPosition.getColumn() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() - i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() - i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //up-left
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i > 8) {
+                    break;
+                }
+                if (myPosition.getColumn() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() - i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() - i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, PieceType));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return returnValue;
         }
         //King
-        else if (ChessPiece.PieceType.KING == PieceType){
+        else if (PieceType == ChessPiece.PieceType.KING) {
 
+            return returnValue;
         }
-        return possibleMoves;
+        //Knight
+        else if (PieceType == ChessPiece.PieceType.KNIGHT) {
+
+            return returnValue;
+        }
+        //pawn
+        else if (PieceType == ChessPiece.PieceType.PAWN) {
+
+            return returnValue;
+        }
+        //queen
+        else if (PieceType == ChessPiece.PieceType.QUEEN) {
+
+            return returnValue;
+        }
+        //Rook
+        else{
+            return returnValue;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
     }
 }

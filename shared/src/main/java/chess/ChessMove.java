@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Objects;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -7,20 +9,26 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessMove {
-    private ChessPosition startPosition;
-    private ChessPosition endPosition;
-    private ChessPiece.PieceType promotionPiece;
+    private final ChessPosition startPosition;
+    private final ChessPosition endPosition;
+    private final ChessPiece.PieceType promotionPiece;
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
     }
 
-    public ChessPosition getStartPosition() {   //return ChessPosition of starting location
+    /**
+     * @return ChessPosition of starting location
+     */
+    public ChessPosition getStartPosition() {
         return startPosition;
     }
 
-    public ChessPosition getEndPosition() {     //return ChessPosition of ending location
+    /**
+     * @return ChessPosition of ending location
+     */
+    public ChessPosition getEndPosition() {
         return endPosition;
     }
 
@@ -31,15 +39,27 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        //write promotion code here
-        if (promotionPiece == ChessPiece.PieceType.PAWN && endPosition.getRow()==8) {
-            return ChessPiece.PieceType.QUEEN;
-        }
-        else if (promotionPiece == ChessPiece.PieceType.PAWN && endPosition.getRow()==1) {
-            return ChessPiece.PieceType.QUEEN;
-        }
-        else{
-            return null;
-        }
+        return promotionPiece;
+        //throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessMove chessMove = (ChessMove) o;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startPosition, endPosition, promotionPiece);
+    }
+
+    public String toString() {
+        return String.format("{%d,%d}", endPosition.getRow(), endPosition.getColumn());
     }
 }
+
+
+
