@@ -37,7 +37,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
+        ChessPiece.PieceType PieceType = board.getPiece(myPosition).getPieceType(); //reads the bored records our piece type
+        //array[][] possibleMoves
 
         //implimnent moves here
         //the input is a board and a pos... the pos tells us the peice on the bored being moved
