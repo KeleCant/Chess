@@ -56,9 +56,9 @@ public class ChessBoard {
     {
         gameBoard[position.getRow()][position.getColumn()] = piece;
     }
-    public void addPiece(int pos1, int pos2, ChessPiece piece)
+    public void addPiece(int Row, int Col, ChessPiece piece)
     {
-        gameBoard[pos1][pos2] = piece;
+        gameBoard[Row][Col] = piece;
     }
 
     /**
@@ -77,39 +77,39 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        addPiece(0,0,BlackRook1);
-        addPiece(0,1,BlackKnight1);
-        addPiece(0,2,BlackBishop1);
-        addPiece(0,3,BlackQueen);
-        addPiece(0,4,BlackKing);
-        addPiece(0,5,BlackBishop2);
-        addPiece(0,6,BlackKnight2);
-        addPiece(0,7,BlackRook2);
-        addPiece(1,0,BlackPawn1);
-        addPiece(1,1,BlackPawn2);
-        addPiece(1,2,BlackPawn3);
-        addPiece(1,3,BlackPawn4);
-        addPiece(1,4,BlackPawn5);
-        addPiece(1,5,BlackPawn6);
-        addPiece(1,6,BlackPawn7);
-        addPiece(1,7,BlackPawn8);
+        addPiece(1,1,WhiteRook1);
+        addPiece(1,2,WhiteKnight1);
+        addPiece(1,3,WhiteBishop1);
+        addPiece(1,4,WhiteQueen);
+        addPiece(1,5,WhiteKing);
+        addPiece(1,6,WhiteBishop2);
+        addPiece(1,7,WhiteKnight2);
+        addPiece(1,8,WhiteRook2);
+        addPiece(2,1,WhitePawn1);
+        addPiece(2,2,WhitePawn2);
+        addPiece(2,3,WhitePawn3);
+        addPiece(2,4,WhitePawn4);
+        addPiece(2,5,WhitePawn5);
+        addPiece(2,6,WhitePawn6);
+        addPiece(2,7,WhitePawn7);
+        addPiece(2,8,WhitePawn8);
 
-        addPiece(7,0,WhiteRook1);
-        addPiece(7,1,WhiteKnight1);
-        addPiece(7,2,WhiteBishop1);
-        addPiece(7,3,WhiteQueen);
-        addPiece(7,4,WhiteKing);
-        addPiece(7,5,WhiteBishop2);
-        addPiece(7,6,WhiteKnight2);
-        addPiece(7,7,WhiteRook2);
-        addPiece(6,0,WhitePawn1);
-        addPiece(6,1,BlackPawn2);
-        addPiece(6,2,WhitePawn3);
-        addPiece(6,3,WhitePawn4);
-        addPiece(6,4,WhitePawn5);
-        addPiece(6,5,WhitePawn6);
-        addPiece(6,6,WhitePawn7);
-        addPiece(6,7,WhitePawn8);
+        addPiece(8,1,BlackRook1);
+        addPiece(8,2,BlackKnight1);
+        addPiece(8,3,BlackBishop1);
+        addPiece(8,4,BlackQueen);
+        addPiece(8,5,BlackKing);
+        addPiece(8,6,BlackBishop2);
+        addPiece(8,7,BlackKnight2);
+        addPiece(8,8,BlackRook2);
+        addPiece(7,1,BlackPawn1);
+        addPiece(7,2,BlackPawn2);
+        addPiece(7,3,BlackPawn3);
+        addPiece(7,4,BlackPawn4);
+        addPiece(7,5,BlackPawn5);
+        addPiece(7,6,BlackPawn6);
+        addPiece(7,7,BlackPawn7);
+        addPiece(7,8,BlackPawn8);
 
         //make it whites turn
     }

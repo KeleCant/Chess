@@ -28,8 +28,7 @@ public class ChessGame {
     }
 
     public enum TeamColor { //Enum identifying the 2 possible teams in a chess game
-        WHITE,
-        BLACK
+        WHITE, BLACK
     }
 
     /**

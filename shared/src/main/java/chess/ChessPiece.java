@@ -11,18 +11,14 @@ import java.util.Collection;
 public class ChessPiece {
     private ChessGame.TeamColor pieceColor;
     private ChessPiece.PieceType type;
+    private int timesMoved = 0;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
 
     public enum PieceType { //The various different chess piece options
-        KING,
-        QUEEN,
-        BISHOP,
-        KNIGHT,
-        ROOK,
-        PAWN
+        KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN
     }
 
     public ChessGame.TeamColor getTeamColor() { //return Which team this chess piece belongs to
@@ -42,6 +38,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+
         //implimnent moves here
         //the input is a board and a pos... the pos tells us the peice on the bored being moved
         //get peice id from bored
@@ -49,7 +46,7 @@ public class ChessPiece {
         //something will have to read the avalible pos and return if the pos is ocucpied
         //stop
 
-
+        //use if then statements to add to an array
 
 
 
