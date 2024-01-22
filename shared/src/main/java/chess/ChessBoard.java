@@ -72,6 +72,9 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         return gameBoard[position.getRow()-1][position.getColumn()-1];
     }
+    public ChessPiece getPiece(int row, int col) {
+        return gameBoard[row-1][col-1];
+    }
 
     public boolean isOccupied(int row, int col) {
         return gameBoard[row-1][col-1] != null;
