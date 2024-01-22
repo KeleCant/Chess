@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -172,6 +171,103 @@ public class ChessPiece {
         }
         //King
         else if (PieceType == ChessPiece.PieceType.KING) {
+
+            //Up
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn()) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn()).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), PieceType));
+                }
+            }
+
+            //Up-Right
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() + 1) == null) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1), PieceType));
+                }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() + 1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1), PieceType));
+                }
+            }
+
+            //Right
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow(), myPosition.getColumn()+1) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow(), myPosition.getColumn()+1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()+1), PieceType));
+                }
+            }
+
+            //Right-Down
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()+1) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()+1), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()+1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()+1), PieceType));
+                }
+            }
+
+            //Down
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()), PieceType));
+                }
+            }
+
+            //Down-Left
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()-1) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()-1), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow() -1, myPosition.getColumn()-1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()-1), PieceType));
+                }
+            }
+
+            //Left
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow(), myPosition.getColumn()-1) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow(), myPosition.getColumn()-1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn()-1), PieceType));
+                }
+            }
+
+            //Up-Left
+            //check to see if there are pieces in the way
+            if (board.getPiece(myPosition.getRow()+1, myPosition.getColumn()-1) == null) {
+                returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1), PieceType));
+            }
+            //check to see if that is an enemy piece, if not terminate this branch
+            else {
+                if (board.getPiece(myPosition.getRow()+1, myPosition.getColumn()-1).getTeamColor() != PieceColor) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1), PieceType));
+                }
+            }
+
 
             return returnValue;
         }

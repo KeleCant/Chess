@@ -141,7 +141,7 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         int result = Objects.hash(BlackRook1, BlackRook2, BlackBishop1, BlackBishop2, BlackKnight1, BlackKnight2, BlackQueen, BlackKing, BlackPawn1, BlackPawn2, BlackPawn3, BlackPawn4, BlackPawn5, BlackPawn6, BlackPawn7, BlackPawn8, WhiteRook1, WhiteRook2, WhiteBishop1, WhiteBishop2, WhiteKnight1, WhiteKnight2, WhiteQueen, WhiteKing, WhitePawn1, WhitePawn2, WhitePawn3, WhitePawn4, WhitePawn5, WhitePawn6, WhitePawn7, WhitePawn8);
-        result = 31 * result + Arrays.hashCode(gameBoard);
+        result = 31 * result + Arrays.deepHashCode(gameBoard);
         return result;
     }
 }
