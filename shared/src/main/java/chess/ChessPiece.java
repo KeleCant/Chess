@@ -38,20 +38,32 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece.PieceType PieceType = board.getPiece(myPosition).getPieceType(); //reads the bored records our piece type
-        //array[][] possibleMoves
+        Collection<ChessMove> possibleMoves;
 
-        //implimnent moves here
-        //the input is a board and a pos... the pos tells us the peice on the bored being moved
-        //get peice id from bored
-        //run through if statements, one for each enum
-        //something will have to read the avalible pos and return if the pos is ocucpied
-        //stop
+        //Pawn
+        if (ChessPiece.PieceType.PAWN == PieceType){
 
-        //use if then statements to add to an array
+        }
+        //Rook
+        else if (ChessPiece.PieceType.ROOK == PieceType){
 
+        }
+        //Knight
+        else if (ChessPiece.PieceType.KNIGHT == PieceType){
 
+        }
+        //Bishop
+        else if (ChessPiece.PieceType.BISHOP == PieceType){
 
+        }
+        //Queen
+        else if (ChessPiece.PieceType.QUEEN == PieceType){
 
-        return null;
+        }
+        //King
+        else if (ChessPiece.PieceType.KING == PieceType){
+
+        }
+        return possibleMoves;
     }
 }
