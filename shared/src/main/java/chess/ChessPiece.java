@@ -145,7 +145,7 @@ public class ChessPiece {
             //up-left
             for (int i = 1; i < 8; i++) {    //runs 7 times
                 //Check to see if you have left the board
-                if (myPosition.getRow() - i > 8) {
+                if (myPosition.getRow() + i > 8) {
                     break;
                 }
                 if (myPosition.getColumn() - i < 1) {
@@ -298,7 +298,191 @@ public class ChessPiece {
         }
         //queen
         else if (PieceType == ChessPiece.PieceType.QUEEN) {
+            //up-right
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() + i > 8) {
+                    break;  //if boundaries are left, terminate
+                }
+                if (myPosition.getColumn() + i > 8) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() + i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() + i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
 
+            //down-right
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i < 1) {
+                    break;
+                }
+                if (myPosition.getColumn() + i > 8) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() + i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() + i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //down-left
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i < 1) {
+                    break;
+                }
+                if (myPosition.getColumn() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() - i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn() - i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //up-left
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() + i > 8) {
+                    break;
+                }
+                if (myPosition.getColumn() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() - i) == null) {
+                    newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
+                    returnValue.add(new ChessMove(myPosition, newPosition, null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn() - i).getTeamColor() != PieceColor) {
+                        newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
+                        returnValue.add(new ChessMove(myPosition, newPosition, null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() + i > 8) {
+                    break;  //if boundaries are left, terminate
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn()) == null) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn()), null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() + i, myPosition.getColumn()).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn()), null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //Right
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getColumn() + i > 8) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow(), myPosition.getColumn() + i) == null) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + i), null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow(), myPosition.getColumn() + i).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + i), null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //Down
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getRow() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn()) == null) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn()), null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow() - i, myPosition.getColumn()).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn()), null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            //Left
+            for (int i = 1; i < 8; i++) {    //runs 7 times
+                //Check to see if you have left the board
+                if (myPosition.getColumn() - i < 1) {
+                    break;
+                }
+                //check to see if there are pieces in the way
+                if (board.getPiece(myPosition.getRow(), myPosition.getColumn() - i) == null) {
+                    returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() - i), null));
+                }
+                //check to see if that is an enemy piece, if not terminate this branch
+                else {
+                    if (board.getPiece(myPosition.getRow(), myPosition.getColumn() - i).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() - i), null));
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
             return returnValue;
         }
         //Rook
