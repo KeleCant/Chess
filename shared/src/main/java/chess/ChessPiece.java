@@ -403,6 +403,13 @@ public class ChessPiece {
                         returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), null));
                     }
                 }
+                //Up-Up
+                if(CheckInBounds(myPosition.getRow() + 2, myPosition.getColumn()) && myPosition.getRow()==2) {
+                    //check to see if there are pieces in the way
+                    if (board.getPiece(myPosition.getRow() + 2, myPosition.getColumn()) == null) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn()), null));
+                    }
+                }
                 //Up-Left
                 if (CheckInBounds(myPosition.getRow()+1, myPosition.getColumn()-1)) {
                     if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() - 1) != null){
@@ -424,6 +431,12 @@ public class ChessPiece {
                 if (CheckInBounds(myPosition.getRow() - 1, myPosition.getColumn())) {
                     if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn()) == null) {
                         returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()), null));
+                    }
+                }
+                //down-down
+                if (CheckInBounds(myPosition.getRow() - 2, myPosition.getColumn()) && myPosition.getRow()==7) {
+                    if (board.getPiece(myPosition.getRow() - 2, myPosition.getColumn()) == null) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn()), null));
                     }
                 }
                 //Right-Down
