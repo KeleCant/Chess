@@ -394,7 +394,53 @@ public class ChessPiece {
         }
         //pawn
         else if (PieceType == ChessPiece.PieceType.PAWN) {
-
+            //for White team
+            if (PieceColor == ChessGame.TeamColor.WHITE){
+                //Up
+                if(CheckInBounds(myPosition.getRow() + 1, myPosition.getColumn())) {
+                    //check to see if there are pieces in the way
+                    if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn()) == null) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()), null));
+                    }
+                }
+                //Up-Left
+                if (CheckInBounds(myPosition.getRow()+1, myPosition.getColumn()-1)) {
+                    if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() - 1) != null){
+                    if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() - 1).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1), null));
+                    }}
+                }
+                //Up-Right
+                if (CheckInBounds(myPosition.getRow() + 1, myPosition.getColumn() + 1)) {
+                    if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() + 1) != null){
+                    if (board.getPiece(myPosition.getRow() + 1, myPosition.getColumn() + 1).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1), null));
+                    }}
+                }
+            }
+            //for black team
+            else{
+                //down
+                if (CheckInBounds(myPosition.getRow() - 1, myPosition.getColumn())) {
+                    if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn()) == null) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()), null));
+                    }
+                }
+                //Right-Down
+                if(CheckInBounds(myPosition.getRow() -1, myPosition.getColumn()+1)) {
+                    if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn() + 1) != null){
+                    if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn() + 1).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + 1), null));
+                    }}
+                }
+                //Down-Left
+                if (CheckInBounds(myPosition.getRow() -1, myPosition.getColumn()-1)) {
+                    if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn() - 1) != null){
+                    if (board.getPiece(myPosition.getRow() - 1, myPosition.getColumn() - 1).getTeamColor() != PieceColor) {
+                        returnValue.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1), null));
+                    }}
+                }
+            }
             return returnValue;
         }
         //queen
