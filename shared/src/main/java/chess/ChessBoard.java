@@ -11,7 +11,9 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private ChessPiece[][] gameBoard = new ChessPiece[8][8]; //this creates a 8 by 8 grid with each pos on the grid representing a ChessPiece class
-    public ChessBoard() {
+    public ChessBoard() {}
+    public ChessBoard(ChessPiece[][] gameBoard) {
+        this.gameBoard = gameBoard;
         
     }
 
@@ -101,12 +103,12 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Arrays.equals(gameBoard, that.gameBoard);
+        return Arrays.deepEquals(gameBoard, that.gameBoard);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(gameBoard);
+        return Arrays.hashCode(gameBoard);
     }
 
     @Override
