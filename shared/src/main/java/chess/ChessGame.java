@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -10,7 +11,6 @@ import java.util.Collection;
  */
 public class ChessGame {
     private ChessBoard GameBoard = new ChessBoard();
-    private ChessBoard CheckGameBoard;
     private TeamColor teamTurn;
 
     public ChessGame() {
@@ -48,7 +48,25 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //check to see if king is in check
+            //locate the king of current player
+        ChessPosition KingPos;
+        for (int j=1; j<9; j++){
+            for (int i=1; i<9; i++){
+                if (GameBoard.getPiece(i, j) == new ChessPiece(teamTurn, ChessPiece.PieceType.KING)) {
+                    KingPos = new ChessPosition(j,i);
+                    break;
+                }
+            }
+        }
+
+        //check every piece and see if the king is in check
+
+
+
         //check to see if moving this piece will put your king in check
+        ChessBoard CheckGameBoard = GameBoard;          //create a copy of the board
+
+
         //look at piece and return valid moves
         return GameBoard.getPiece(startPosition).pieceMoves(GameBoard,startPosition);
     }
