@@ -9,13 +9,17 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private ChessBoard GameBoard = new ChessBoard();
+    private ChessBoard CheckGameBoard;
+    private TeamColor teamTurn;
 
     public ChessGame() {
-
+        GameBoard.resetBoard();
+        teamTurn = TeamColor.WHITE;
     }
 
     public TeamColor getTeamTurn() { //return Which team's turn it is
-        throw new RuntimeException("Not implemented");
+        return teamTurn;
     }
 
     /**
@@ -24,7 +28,11 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        if (team == TeamColor.WHITE){
+            teamTurn = TeamColor.BLACK;
+        } else{
+            teamTurn = TeamColor.WHITE;
+        }
     }
 
     public enum TeamColor { //Enum identifying the 2 possible teams in a chess game
@@ -39,7 +47,10 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        //check to see if king is in check
+        //check to see if moving this piece will put your king in check
+        //look at piece and return valid moves
+        return GameBoard.getPiece(startPosition).pieceMoves(GameBoard,startPosition);
     }
 
     /**
@@ -89,7 +100,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        GameBoard = board;
     }
 
     /**
@@ -98,6 +109,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return GameBoard;
     }
 }

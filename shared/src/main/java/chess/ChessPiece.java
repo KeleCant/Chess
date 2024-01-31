@@ -104,6 +104,7 @@ public class ChessPiece {
             collection = AddSinglePosition(-1,-2, board, myPosition, collection);    //down-left-left
             collection = AddSinglePosition(1,-2, board, myPosition, collection);     //up-left-left
             collection = AddSinglePosition(2,-1, board, myPosition, collection);      //up-up-left
+
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
@@ -191,7 +192,7 @@ public class ChessPiece {
         return collection;
     }
 
-    public boolean IsEmpty(int up, int right, ChessBoard board, ChessPosition myPosition){
+    private boolean IsEmpty(int up, int right, ChessBoard board, ChessPosition myPosition){
         if (IsInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
             if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right) == null){
                 return true;
@@ -205,7 +206,7 @@ public class ChessPiece {
         }
     }
 
-    public boolean IsEnemy(int up, int right, ChessBoard board, ChessPosition myPosition){
+    private boolean IsEnemy(int up, int right, ChessBoard board, ChessPosition myPosition){
         if(IsInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
             if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right) != null){
                 if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
@@ -242,7 +243,7 @@ public class ChessPiece {
     }
 
 
-    public boolean IsInbounds(int row, int col){
+    private boolean IsInbounds(int row, int col){
         if (row > 8 || row < 1 || col > 8 || col < 1){
             return false;
         }
