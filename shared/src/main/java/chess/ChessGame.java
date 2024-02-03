@@ -85,20 +85,12 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //read every piece of enemy team
-        for (int j=1; j<9; j++){
-            for (int i=1; i<9; i++){
-                if (GameBoard.getPiece(i, j) != null) {
-                    if (GameBoard.getPiece(i, j).getTeamColor() != teamColor) {
-                        for (ChessMove M : GameBoard.getPiece(i, j).pieceMoves(GameBoard, new ChessPosition(i, j))) {
-                            if (M.getEndPosition() == FindKingPosition())
-                                return true;
-                        }
-                    }
-                }
-            }
+        Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(teamColor);
+        if (EnemyMoves.contains(FindKingPosition())){
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -139,9 +131,20 @@ public class ChessGame {
         throw new RuntimeException("No King Found");
     }
 
-    public ChessPosition ReturnEnemyLocations(TeamColor teamColor){
-
-        return ChessPosition;
+    public Collection<ChessPosition> ReturnEnemyMoves(TeamColor teamColor){
+        Collection<ChessPosition> moves = new HashSet<>();
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                if (GameBoard.getPiece(i, j) != null) {
+                    if (GameBoard.getPiece(i, j).getTeamColor() != teamColor) {
+                        for (ChessMove M : GameBoard.getPiece(i, j).pieceMoves(GameBoard, new ChessPosition(i, j))) {
+                            moves.add(M.getEndPosition());
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     /**
