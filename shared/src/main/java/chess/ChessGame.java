@@ -29,9 +29,9 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         if (team == TeamColor.WHITE){
-            teamTurn = TeamColor.BLACK;
-        } else{
             teamTurn = TeamColor.WHITE;
+        } else{
+            teamTurn = TeamColor.BLACK;
         }
     }
 
@@ -47,7 +47,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-
         //check for checkmate
         if (!isInCheckmate(teamTurn)){
             throw new RuntimeException("You are in Check, Game over");
@@ -87,7 +86,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(teamColor);
-        if (EnemyMoves.contains(FindKingPosition())){
+        if (EnemyMoves.contains(FindKingPosition(teamColor))){
             return true;
         } else {
             return false;
@@ -102,7 +101,23 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor))
+            return false;
+
+        //check to see if any pieces can move that are not the king
+        if (ReturnTeamMoves(teamColor).size() > GetKingMoves(teamColor).size()){
+            return false;
+        }
+
+        //Check to see if the king can move
+        for (ChessPosition M: GetKingMoves(teamColor)){
+            if (!ReturnEnemyMoves(teamColor).contains(M)){
+                return false;
+            }
+        }
+
+        //if no conditions are met return true
+        return true;
     }
 
     /**
@@ -112,24 +127,38 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (isInCheck(teamColor) && isInStalemate(teamColor)){
-            return true;
-        } else {
-            return false;
-        }
+//        if (isInCheck(teamColor)) {
+//            if (isInStalemate(teamColor)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//            else {
+//            return false;
+//        }
+        return false;
     }
 
-    public ChessPosition FindKingPosition(){
+    public ChessPosition FindKingPosition(TeamColor teamColor){
         for (int j=1; j<9; j++){
             for (int i=1; i<9; i++) {
                 if (GameBoard.getPiece(i, j) != null) {
-                    if (GameBoard.getPiece(i, j).getPieceType() == ChessPiece.PieceType.KING) {
+                    if (GameBoard.getPiece(i, j).getPieceType() == ChessPiece.PieceType.KING && GameBoard.getPiece(i, j).getTeamColor() == teamColor) {
                         return new ChessPosition(i, j);
                     }
                 }
             }
         }
         throw new RuntimeException("No King Found");
+    }
+
+    public Collection<ChessPosition> GetKingMoves(TeamColor teamColor){
+        Collection<ChessPosition> moves = new HashSet<>();
+        for (ChessMove M : GameBoard.getPiece(FindKingPosition(teamColor)).pieceMoves(GameBoard, FindKingPosition(teamColor))) {
+            moves.add(M.getEndPosition());
+        }
+        return moves;
     }
 
     public Collection<ChessPosition> ReturnEnemyMoves(TeamColor teamColor){
@@ -148,21 +177,27 @@ public class ChessGame {
         return moves;
     }
 
-    /**
-     * Sets this game's chessboard with a given board
-     *
-     * @param board the new board to use
-     */
-    public void setBoard(ChessBoard board) {
+    public Collection<ChessPosition> ReturnTeamMoves(TeamColor teamColor){
+        Collection<ChessPosition> moves = new HashSet<>();
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                if (GameBoard.getPiece(i, j) != null) {
+                    if (GameBoard.getPiece(i, j).getTeamColor() == teamColor) {
+                        for (ChessMove M : GameBoard.getPiece(i, j).pieceMoves(GameBoard, new ChessPosition(i, j))) {
+                            moves.add(M.getEndPosition());
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
+    }
+
+    public void setBoard(ChessBoard board) {       //sets board
         GameBoard = board;
     }
 
-    /**
-     * Gets the current chessboard
-     *
-     * @return the chessboard
-     */
-    public ChessBoard getBoard() {
+    public ChessBoard getBoard() {      //returns GameBoard
         return GameBoard;
     }
 }
