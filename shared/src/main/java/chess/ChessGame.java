@@ -1,7 +1,7 @@
 package chess;
 
 import java.util.Collection;
-import java.util.Objects;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -47,28 +47,25 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        //check to see if king is in check
-            //locate the king of current player
-        ChessPosition KingPos;
-        for (int j=1; j<9; j++){
-            for (int i=1; i<9; i++){
-                if (GameBoard.getPiece(i, j) == new ChessPiece(teamTurn, ChessPiece.PieceType.KING)) {
-                    KingPos = new ChessPosition(j,i);
-                    break;
-                }
-            }
+        //check for checkmate
+        if (!isInCheckmate(teamTurn)){
+            throw new RuntimeException("You are in Check, Game over");
         }
-
-        //check every piece and see if the king is in check
-
-
-
-        //check to see if moving this piece will put your king in check
-        ChessBoard CheckGameBoard = GameBoard;          //create a copy of the board
-
-
-        //look at piece and return valid moves
-        return GameBoard.getPiece(startPosition).pieceMoves(GameBoard,startPosition);
+        //check for stalemate
+        else if(!isInStalemate(teamTurn)){
+            throw new RuntimeException("You cannot move, it is a draw");
+        }
+        //check for stalemate
+        else if (!isInCheck(teamTurn)){
+            //force them to move their king or something in front of the king
+        }
+        //run normal
+        else{
+            //look at piece and return valid moves
+            //make sure this move doesn't put you in check
+            return GameBoard.getPiece(startPosition).pieceMoves(GameBoard,startPosition);
+        }
+        throw new RuntimeException("Error line 68");
     }
 
     /**
@@ -88,17 +85,20 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * Determines if the given team is in checkmate
-     *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
-     */
-    public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //read every piece of enemy team
+        for (int j=1; j<9; j++){
+            for (int i=1; i<9; i++){
+                if (GameBoard.getPiece(i, j) != null) {
+                    if (GameBoard.getPiece(i, j).getTeamColor() != teamColor) {
+                        for (ChessMove M : GameBoard.getPiece(i, j).pieceMoves(GameBoard, new ChessPosition(i, j))) {
+                            if (M.getEndPosition() == FindKingPosition())
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -110,6 +110,38 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * Determines if the given team is in checkmate
+     *
+     * @param teamColor which team to check for checkmate
+     * @return True if the specified team is in checkmate
+     */
+    public boolean isInCheckmate(TeamColor teamColor) {
+        if (isInCheck(teamColor) && isInStalemate(teamColor)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public ChessPosition FindKingPosition(){
+        for (int j=1; j<9; j++){
+            for (int i=1; i<9; i++) {
+                if (GameBoard.getPiece(i, j) != null) {
+                    if (GameBoard.getPiece(i, j).getPieceType() == ChessPiece.PieceType.KING) {
+                        return new ChessPosition(i, j);
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("No King Found");
+    }
+
+    public ChessPosition ReturnEnemyLocations(TeamColor teamColor){
+
+        return ChessPosition;
     }
 
     /**
