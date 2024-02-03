@@ -47,6 +47,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+
         //check for checkmate
         if (!isInCheckmate(teamTurn)){
             throw new RuntimeException("You are in Check, Game over");
