@@ -47,25 +47,25 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        if (GameBoard.getPiece(startPosition) == null)
+            return null;
+            //throw new RuntimeException("No piece at that position");
         //check for checkmate
-        if (!isInCheckmate(teamTurn)){
-            throw new RuntimeException("You are in Check, Game over");
-        }
+        if (isInCheckmate(teamTurn))
+            return null;
+            //throw new RuntimeException("You are in Check, Game over");
         //check for stalemate
-        else if(!isInStalemate(teamTurn)){
-            throw new RuntimeException("You cannot move, it is a draw");
-        }
+        if(isInStalemate(teamTurn))
+            return null;
+            //throw new RuntimeException("You cannot move, it is a draw");
         //check for stalemate
-        else if (!isInCheck(teamTurn)){
+        if (isInCheck(teamTurn)){
             //force them to move their king or something in front of the king
+            throw new RuntimeException("not yet implimented");
+            //lots of logic required for this bad boy
         }
         //run normal
-        else{
-            //look at piece and return valid moves
-            //make sure this move doesn't put you in check
-            return GameBoard.getPiece(startPosition).pieceMoves(GameBoard,startPosition);
-        }
-        throw new RuntimeException("Error line 68");
+        return GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition);
     }
 
     /**
@@ -75,7 +75,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        //look at the start position, look at the end position, look at the promotion piece.
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+        var test1 = validMoves;
+        var test2 = move.getEndPosition();
+        if (validMoves.contains(move)){
+            //place new piece and removes the old piece
+            GameBoard.addPiece(move.getEndPosition().getRow(), move.getEndPosition().getColumn(), GameBoard.getPiece(move.getStartPosition()));
+            GameBoard.addPiece(move.getStartPosition().getRow(), move.getStartPosition().getColumn(), null);
+        } else {
+            //throw new InvalidMoveException();
+            throw new InvalidMoveException("invalid move");
+        }
     }
 
     /**
@@ -149,7 +160,7 @@ public class ChessGame {
             totalEnemyMoves.addAll(ReturnEnemyMoves(CheckGameBoard,teamColor));
         }
 
-        Collection<ChessPosition> Test1 = GetKingMoves(teamColor);
+        //Collection<ChessPosition> Test1 = GetKingMoves(teamColor);
         for (ChessPosition M: GetKingMoves(teamColor)) {
             if (!totalEnemyMoves.contains(M)){
                 return false;
@@ -169,6 +180,7 @@ public class ChessGame {
                 }
             }
         }
+        //throw InvalidMoveException("No King Found");
         throw new RuntimeException("No King Found");
     }
 
