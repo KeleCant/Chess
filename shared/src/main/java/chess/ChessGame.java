@@ -64,6 +64,7 @@ public class ChessGame {
             throw new RuntimeException("not yet implimented");
             //lots of logic required for this bad boy
         }
+        //if the piece is a king there are restrictions to movement
         //run normal
         return GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition);
     }
