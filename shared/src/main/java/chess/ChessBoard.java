@@ -12,10 +12,6 @@ public class ChessBoard {
     private ChessPiece[][] GameBoard = new ChessPiece[8][8];
     public ChessBoard() {}
 
-    public ChessBoard(ChessPiece[][] GameBoard) {
-        this.GameBoard = GameBoard;
-    }
-
     /**
      * Adds a chess piece to the chessboard
      *

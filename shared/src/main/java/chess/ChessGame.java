@@ -85,7 +85,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(teamColor);
+        Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(GameBoard, teamColor);
         if (EnemyMoves.contains(FindKingPosition(teamColor))){
             return true;
         } else {
@@ -111,7 +111,7 @@ public class ChessGame {
 
         //Check to see if the king can move
         for (ChessPosition M: GetKingMoves(teamColor)){
-            if (!ReturnEnemyMoves(teamColor).contains(M)){
+            if (!ReturnEnemyMoves(GameBoard, teamColor).contains(M)){
                 return false;
             }
         }
@@ -127,17 +127,36 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-//        if (isInCheck(teamColor)) {
-//            if (isInStalemate(teamColor)) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//            else {
-//            return false;
-//        }
-        return false;
+        //check to see if in check
+        if (!isInCheck(teamColor))
+            return false;
+
+        //Check to see if the king can move
+        Collection<ChessPosition> totalEnemyMoves = new HashSet<>();
+        for (ChessPosition M: GetKingMoves(teamColor)) {
+            //creates a new chessboard step by step
+            ChessBoard CheckGameBoard = new ChessBoard();
+            for (int i=1; i<9; i++){
+                for (int j=1; j<9; j++){
+                    CheckGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
+                }
+            }
+
+            //creates a new board with the king moved to this position
+            CheckGameBoard.addPiece(M.getRow(), M.getColumn(), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
+            CheckGameBoard.addPiece(FindKingPosition(teamColor), null);
+
+            totalEnemyMoves.addAll(ReturnEnemyMoves(CheckGameBoard,teamColor));
+        }
+
+        Collection<ChessPosition> Test1 = GetKingMoves(teamColor);
+        for (ChessPosition M: GetKingMoves(teamColor)) {
+            if (!totalEnemyMoves.contains(M)){
+                return false;
+            }
+        }
+        //fixme This code only looks at the kings position. If I was to fully Impliment a solution I would need the system to check every piece's moves to see if they can block the check.
+        return true;
     }
 
     public ChessPosition FindKingPosition(TeamColor teamColor){
@@ -161,7 +180,7 @@ public class ChessGame {
         return moves;
     }
 
-    public Collection<ChessPosition> ReturnEnemyMoves(TeamColor teamColor){
+    public Collection<ChessPosition> ReturnEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){     //fixme pawns potential moves need to be added to this list
         Collection<ChessPosition> moves = new HashSet<>();
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
@@ -174,6 +193,20 @@ public class ChessGame {
                 }
             }
         }
+//        //locate every pawn
+//        //add their offensive positions to this
+//        for (int i=1; i<9; i++){
+//            for (int j=1; j<9; j++){
+//                if (GameBoard.getPiece(i, j) != null) {
+//                    if (GameBoard.getPiece(i, j).getTeamColor() != teamColor || GameBoard.getPiece(i, j).getPieceType() == ChessPiece.PieceType.PAWN) {
+//                        if (GameBoard.getPiece(i, j).getTeamColor() == TeamColor.WHITE){
+//                            //add white pawn offensive moves
+//                            moves.add()
+//                        } else {
+//                            //add black pawn offensive moves
+//                            moves.add()
+//                        }
+//                    }
         return moves;
     }
 
