@@ -79,13 +79,41 @@ public class ChessGame {
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
         var test1 = validMoves;
         var test2 = move.getEndPosition();
-        if (validMoves.contains(move)){
+
+        //pawn moves
+        if (move.getPromotionPiece() != null){
+            //check and make sure it is a pawn
+            if (GameBoard.getPiece(move.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN){
+                //make sure the end position is going into row 1 or 8
+                if (move.getEndPosition().getRow()==1 || move.getEndPosition().getRow()==8){
+                    //check and make sure moves are valid
+                    if (validMoves.contains(move)){
+                        //place new piece and removes the old piece
+                        GameBoard.addPiece(move.getEndPosition().getRow(), move.getEndPosition().getColumn(), new ChessPiece(teamTurn, move.getPromotionPiece()));
+                        GameBoard.addPiece(move.getStartPosition().getRow(), move.getStartPosition().getColumn(), null);
+                    } else {
+                        //throw new InvalidMoveException();
+                        throw new InvalidMoveException("invalid move");
+                    }
+                }
+            } else{
+                throw new InvalidMoveException("invalid move");
+            }
+
+        } else if (validMoves.contains(move)){
             //place new piece and removes the old piece
             GameBoard.addPiece(move.getEndPosition().getRow(), move.getEndPosition().getColumn(), GameBoard.getPiece(move.getStartPosition()));
             GameBoard.addPiece(move.getStartPosition().getRow(), move.getStartPosition().getColumn(), null);
         } else {
             //throw new InvalidMoveException();
             throw new InvalidMoveException("invalid move");
+        }
+
+
+        if (teamTurn == TeamColor.WHITE){
+            teamTurn = TeamColor.BLACK;
+        } else {
+            teamTurn = TeamColor.WHITE;
         }
     }
 
@@ -112,6 +140,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+
+        //logic code for tests
+        if (FindKingPosition(teamColor) == null)
+            return false;
+
         if (isInCheck(teamColor))
             return false;
 
@@ -181,7 +214,8 @@ public class ChessGame {
             }
         }
         //throw InvalidMoveException("No King Found");
-        throw new RuntimeException("No King Found");
+        //throw new RuntimeException("No King Found");
+        return null;
     }
 
     public Collection<ChessPosition> GetKingMoves(TeamColor teamColor){
