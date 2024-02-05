@@ -57,60 +57,33 @@ public class ChessGame {
         //check for stalemate
         if(isInStalemate(teamTurn))
             return null;
-            //throw new RuntimeException("You cannot move, it is a draw");
-        //check for stalemate
-        //if (isInCheck(teamTurn)){
-            //force them to move their king or something in front of the king
-            //throw new RuntimeException("not yet implimented");
 
-            Collection<ChessMove> moveList = new HashSet<>();
+        Collection<ChessMove> moveList = new HashSet<>();
 
-
-
-
-
-            //lots of logic required for this bad boy
-            //create a new game board, move the king and ask if its in check, if it's not in check add it to the list
-            //if its empty throw exeption.
-
-
-
-
-
-
-
-            //Check to see if the king can move
-            Collection<ChessPosition> ThisTeamPossibleMoves = new HashSet<>();
-            //grabs each potential move this team has
-            for (ChessMove M: ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor())) {
-
-                //creates a new chessboard that we can modify
-                ChessBoard CheckGameBoard = new ChessBoard();
-                for (int i=1; i<9; i++){
-                    for (int j=1; j<9; j++){
-                        CheckGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
-                    }
-                }
-
-
-                //make the selected move
-                CheckGameBoard.addPiece(M.getEndPosition(), new ChessPiece(GameBoard.getPiece(M.getStartPosition()).getTeamColor(),GameBoard.getPiece(M.getStartPosition()).getPieceType()));
-                CheckGameBoard.addPiece(M.getStartPosition(), null);
-
-
-                //check to see if the King is in check
-                if (!isInCheck(CheckGameBoard, teamTurn)){
-                    moveList.add(M);
+        Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
+        for (ChessMove M: ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor())) {
+            //creates a new chessboard that we can modify
+            ChessBoard CheckGameBoard = new ChessBoard();
+            for (int i=1; i<9; i++){
+                for (int j=1; j<9; j++){
+                    CheckGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
                 }
             }
 
+            //make the selected move
+            CheckGameBoard.addPiece(M.getEndPosition(), new ChessPiece(CheckGameBoard.getPiece(M.getStartPosition()).getTeamColor(),CheckGameBoard.getPiece(M.getStartPosition()).getPieceType()));
+            CheckGameBoard.addPiece(M.getStartPosition(), null);
 
-            return moveList;
-            //Collection<ChessPosition> Test1 = GetKingMoves(teamColor);
-        //}
-        //if the piece is a king there are restrictions to movement
-        //run normal
-        //return GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition);
+            //check to see if the King is in check
+            if (!isInCheck(CheckGameBoard, teamTurn)){
+                moveList.add(M);
+            }
+        }
+
+        if (moveList.size() == 0){
+            return null;
+        }
+        return moveList;
     }
 
     /**
