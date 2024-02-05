@@ -55,34 +55,35 @@ public class ChessGame {
             return null;
             //throw new RuntimeException("You are in Check, Game over");
         //check for stalemate
-        if(isInStalemate(teamTurn))
+        if (isInStalemate(teamTurn))
             return null;
 
         Collection<ChessMove> moveList = new HashSet<>();
 
         Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
-        for (ChessMove M: ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor())) {
+        for (ChessMove M: GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition)) {
             //creates a new chessboard that we can modify
-            ChessBoard CheckGameBoard = new ChessBoard();
+            ChessBoard TestGameBoard = new ChessBoard();
             for (int i=1; i<9; i++){
                 for (int j=1; j<9; j++){
-                    CheckGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
+                    TestGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
                 }
             }
 
             //make the selected move
-            CheckGameBoard.addPiece(M.getEndPosition(), new ChessPiece(CheckGameBoard.getPiece(M.getStartPosition()).getTeamColor(),CheckGameBoard.getPiece(M.getStartPosition()).getPieceType()));
-            CheckGameBoard.addPiece(M.getStartPosition(), null);
+            TestGameBoard.addPiece(M.getEndPosition(), new ChessPiece(TestGameBoard.getPiece(M.getStartPosition()).getTeamColor(),TestGameBoard.getPiece(M.getStartPosition()).getPieceType()));
+            TestGameBoard.addPiece(M.getStartPosition(), null);
+
+
+            //everything up to this point works very well
+
 
             //check to see if the King is in check
-            if (!isInCheck(CheckGameBoard, teamTurn)){
+            if (!isInCheck(TestGameBoard, teamTurn)){
                 moveList.add(M);
             }
         }
-
-        if (moveList.size() == 0){
-            return null;
-        }
+        //currently it is no returning the correct moves
         return moveList;
     }
 
