@@ -54,16 +54,35 @@ public class ChessGame {
             return null;
             //throw new RuntimeException("No piece at that position");
         //check for checkmate
-        if (isInCheckmate(teamTurn))
+        if (isInCheckmate(GameBoard.getPiece(startPosition).getTeamColor()))
             return moveList;
             //throw new RuntimeException("You are in Check, Game over");
         //check for stalemate
-        if (isInStalemate(teamTurn))
+        if (isInStalemate(GameBoard.getPiece(startPosition).getTeamColor()))
             return moveList;
-//        if (isInCheck(teamTurn) && GameBoard.getPiece(startPosition).getPieceType() != ChessPiece.PieceType.KING)
-//            return moveList;
-//        if (isInCheck(teamTurn))
-//            return null;
+        if (isInCheck(GameBoard.getPiece(startPosition).getTeamColor())){
+            //check to see if move takes you out of
+            //Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
+            for (ChessMove M: GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition)) {
+                //creates a new chessboard that we can modify
+                ChessBoard TestGameBoard = new ChessBoard();
+                for (int i=1; i<9; i++){
+                    for (int j=1; j<9; j++){
+                        TestGameBoard.addPiece(i,j, GameBoard.getPiece(i,j));
+                    }
+                }
+
+                //make the selected move
+                TestGameBoard.addPiece(M.getEndPosition(), new ChessPiece(GameBoard.getPiece(startPosition).getTeamColor(),TestGameBoard.getPiece(M.getStartPosition()).getPieceType()));
+                TestGameBoard.addPiece(M.getStartPosition(), null);
+
+                //check to see if the King is in check
+                if (!isInCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
+                    moveList.add(M);
+                }
+            }
+
+        }
 
 
         //Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
@@ -87,16 +106,17 @@ public class ChessGame {
 
 
             //check to see if the King is in check
-            if (!isInCheck(TestGameBoard, teamTurn)){
+            if (!isInCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
                 moveList.add(M);
             }
         }
         //currently it is no returning the correct moves
         return moveList;
+        //return GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition);
     }
 
     public boolean isInCheck(ChessBoard GameBoard,TeamColor teamColor) {
-        Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(GameBoard, teamColor);
+        Collection<ChessPosition> EnemyMoves = GetEnemyMoves(GameBoard, teamColor);
         if (FindKingPosition(GameBoard, teamColor) == null)
             return false;
         return EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
@@ -114,6 +134,22 @@ public class ChessGame {
         }
         //throw new RuntimeException("no king found");
         return null;
+    }
+
+    public Collection<ChessPosition> GetEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
+        Collection<ChessPosition> moves = new HashSet<>();
+        for (int i=1; i<9; i++){
+            for (int j=1; j<9; j++){
+                if (GameBoard.getPiece(i, j) != null) {
+                    if (GameBoard.getPiece(i, j).getTeamColor() != teamColor) {
+                        for (ChessMove M : GameBoard.getPiece(i, j).pieceMoves(GameBoard, new ChessPosition(i, j))) {
+                            moves.add(M.getEndPosition());
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     /**
