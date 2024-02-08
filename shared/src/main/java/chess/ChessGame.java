@@ -52,17 +52,14 @@ public class ChessGame {
 
         if (GameBoard.getPiece(startPosition) == null)
             return null;
-            //throw new RuntimeException("No piece at that position");
         //check for checkmate
         if (isInCheckmate(GameBoard.getPiece(startPosition).getTeamColor()))
             return moveList;
-            //throw new RuntimeException("You are in Check, Game over");
         //check for stalemate
         if (isInStalemate(GameBoard.getPiece(startPosition).getTeamColor()))
             return moveList;
         if (isInCheck(GameBoard.getPiece(startPosition).getTeamColor())){
             //check to see if move takes you out of
-            //Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
             for (ChessMove M: GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition)) {
                 //creates a new chessboard that we can modify
                 ChessBoard TestGameBoard = new ChessBoard();
@@ -77,13 +74,11 @@ public class ChessGame {
                 TestGameBoard.addPiece(M.getStartPosition(), null);
 
                 //check to see if the King is in check
-                if (!isInCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
+                if (IsNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
                     moveList.add(M);
                 }
             }
-
         }
-
 
         //Collection<ChessMove> Test1 = ReturnTeamPiecesMoves(GameBoard.getPiece(startPosition).getTeamColor());
         for (ChessMove M: GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition)) {
@@ -99,41 +94,12 @@ public class ChessGame {
             TestGameBoard.addPiece(M.getEndPosition(), new ChessPiece(TestGameBoard.getPiece(M.getStartPosition()).getTeamColor(),TestGameBoard.getPiece(M.getStartPosition()).getPieceType()));
             TestGameBoard.addPiece(M.getStartPosition(), null);
 
-
-            //everything up to this point works very well
-
-            //need to make sure this game board does not put the king in check
-
-
             //check to see if the King is in check
-            if (!isInCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
+            if (IsNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
                 moveList.add(M);
             }
         }
-        //currently it is no returning the correct moves
         return moveList;
-        //return GameBoard.getPiece(startPosition).pieceMoves(GameBoard, startPosition);
-    }
-
-    public boolean isInCheck(ChessBoard GameBoard,TeamColor teamColor) {
-        Collection<ChessPosition> EnemyMoves = GetEnemyMoves(GameBoard, teamColor);
-        if (FindKingPosition(GameBoard, teamColor) == null)
-            return false;
-        return EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
-    }
-
-    public ChessPosition FindKingPosition(ChessBoard GameBoard, TeamColor teamColor){
-        for (int j=1; j<9; j++){
-            for (int i=1; i<9; i++) {
-                if (GameBoard.getPiece(i, j) != null) {
-                    if (GameBoard.getPiece(i, j).getPieceType() == ChessPiece.PieceType.KING && GameBoard.getPiece(i, j).getTeamColor() == teamColor) {
-                        return new ChessPosition(i, j);
-                    }
-                }
-            }
-        }
-        //throw new RuntimeException("no king found");
-        return null;
     }
 
     public Collection<ChessPosition> GetEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
@@ -178,7 +144,6 @@ public class ChessGame {
                         GameBoard.addPiece(move.getEndPosition().getRow(), move.getEndPosition().getColumn(), new ChessPiece(teamTurn, move.getPromotionPiece()));
                         GameBoard.addPiece(move.getStartPosition().getRow(), move.getStartPosition().getColumn(), null);
                     } else {
-                        //throw new InvalidMoveException();
                         throw new InvalidMoveException("invalid move");
                     }
                 }
@@ -211,7 +176,13 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(GameBoard, teamColor);
-        return EnemyMoves.contains(FindKingPosition(teamColor));
+        return EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
+    }
+    public boolean IsNotCheck(ChessBoard GameBoard,TeamColor teamColor) {
+        Collection<ChessPosition> EnemyMoves = GetEnemyMoves(GameBoard, teamColor);
+        if (FindKingPosition(GameBoard, teamColor) == null)
+            return true;
+        return !EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
     }
 
     /**
@@ -224,7 +195,7 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
 
         //logic code for tests
-        if (FindKingPosition(teamColor) == null)
+        if (FindKingPosition(GameBoard, teamColor) == null)
             return false;
 
         if (isInCheck(teamColor))
@@ -270,7 +241,7 @@ public class ChessGame {
 
             //creates a new board with the king moved to this position
             CheckGameBoard.addPiece(M.getRow(), M.getColumn(), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
-            CheckGameBoard.addPiece(FindKingPosition(teamColor), null);
+            CheckGameBoard.addPiece(FindKingPosition(GameBoard, teamColor), null);
 
             totalEnemyMoves.addAll(ReturnEnemyMoves(CheckGameBoard,teamColor));
         }
@@ -285,7 +256,7 @@ public class ChessGame {
         return true;
     }
 
-    public ChessPosition FindKingPosition(TeamColor teamColor){
+    public ChessPosition FindKingPosition(ChessBoard GameBoard, TeamColor teamColor){
         for (int j=1; j<9; j++){
             for (int i=1; i<9; i++) {
                 if (GameBoard.getPiece(i, j) != null) {
@@ -295,14 +266,12 @@ public class ChessGame {
                 }
             }
         }
-        //throw InvalidMoveException("No King Found");
-        //throw new RuntimeException("No King Found");
         return null;
     }
 
     public Collection<ChessPosition> GetKingMoves(TeamColor teamColor){
         Collection<ChessPosition> moves = new HashSet<>();
-        for (ChessMove M : GameBoard.getPiece(FindKingPosition(teamColor)).pieceMoves(GameBoard, FindKingPosition(teamColor))) {
+        for (ChessMove M : GameBoard.getPiece(FindKingPosition(GameBoard, teamColor)).pieceMoves(GameBoard, FindKingPosition(GameBoard, teamColor))) {
             moves.add(M.getEndPosition());
         }
         return moves;
