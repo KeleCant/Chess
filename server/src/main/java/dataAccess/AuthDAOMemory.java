@@ -8,11 +8,13 @@ public class AuthDAOMemory implements AuthDAO {
     private HashMap<String, AuthData> AuthDataList = new HashMap<>();
 
     //clear: A method for clearing all data from the database. This is used during testing.
+    @Override
     public void clear(){
         AuthDataList.clear();
     }
 
     //createAuth: Create a new authorization.
+    @Override
     public String createAuth(String username){
         String newAuth = UUID.randomUUID().toString();
         //if by chance the random generator generates the same string twice
@@ -25,11 +27,13 @@ public class AuthDAOMemory implements AuthDAO {
     }
 
     //getAuth: Retrieve an authorization given an authToken.
+    @Override
     public boolean getAuth(String authToken){
         return AuthDataList.containsKey(authToken);
     }
 
     //deleteAuth: Delete an authorization so that it is no longer valid.
+    @Override
     public void deleteAuth(String authToken) throws DataAccessException{
         if (!AuthDataList.containsKey(authToken)) {
             throw new DataAccessException("Exit Code 401 \"Error: unauthorized\"");

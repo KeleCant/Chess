@@ -17,7 +17,7 @@ public class Server {
         Spark.staticFiles.location("web");
         //Spark.externalStaticFileLocation("C:\\Users\\kelec\\CS 240\\chess\\web");
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", (req, res) -> (new ClearHandler()).clear(req, res));
+        //Spark.delete("/db", (req, res) -> (new ClearHandler()).clear(req, res));
         //register(username, password, email)
         //login(username, password)
         //logout(authToken)
