@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class UserDAOMemory implements UserDAO {
     private HashMap<String, UserData> UserDataList = new HashMap<>();
+
     //clear: A method for clearing all data from the database. This is used during testing.
     public void clear(){
         UserDataList.clear();

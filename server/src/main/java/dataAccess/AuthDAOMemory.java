@@ -6,9 +6,12 @@ import java.util.UUID;
 
 public class AuthDAOMemory implements AuthDAO {
     private HashMap<String, AuthData> AuthDataList = new HashMap<>();
+
+    //clear: A method for clearing all data from the database. This is used during testing.
     public void clear(){
         AuthDataList.clear();
     }
+
     //createAuth: Create a new authorization.
     public String createAuth(String username){
         String newAuth = UUID.randomUUID().toString();
