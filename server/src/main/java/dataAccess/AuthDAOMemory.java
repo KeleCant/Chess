@@ -29,7 +29,7 @@ public class AuthDAOMemory implements AuthDAO {
     //deleteAuth: Delete an authorization so that it is no longer valid.
     public void deleteAuth(String authToken) throws DataAccessException{
         if (!AuthDataList.containsKey(authToken)) {
-            throw new DataAccessException("Exit Code 401 \"Error: unauthorized / Unknown authToken\"");
+            throw new DataAccessException("Exit Code 401 \"Error: unauthorized\"");
         }
         AuthDataList.remove(authToken);
     }
