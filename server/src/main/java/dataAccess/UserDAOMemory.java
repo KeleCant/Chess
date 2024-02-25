@@ -3,6 +3,7 @@ package dataAccess;
 import model.AuthData;
 import model.UserData;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UserDAOMemory implements UserDAO {
     private HashMap<String, UserData> UserDataList = new HashMap<>();
@@ -33,9 +34,17 @@ public class UserDAOMemory implements UserDAO {
         }
         return UserDataList.get(username);
     }
+    @Override
     public void checkUsername(String username) throws DataAccessException{
         if (!UserDataList.containsKey(username)) {
             throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
+        }
+    }
+
+    @Override
+    public void checkPassword(String username, String password) throws DataAccessException{
+        if (!Objects.equals(UserDataList.get(username).password(), password)) {
+            throw new DataAccessException("Exit Code 401 \"Error: unauthorized\"");
         }
     }
 }
