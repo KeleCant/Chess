@@ -4,7 +4,7 @@ import dataAccess.*;
 
 public class RegistrationService {
 
-    public String createUser (String username, String password, String email) throws DataAccessException {
+    public String register (String username, String password, String email) throws DataAccessException {
         UserDAO UserDAO = new UserDAOMemory();
         AuthDAO AuthDAO = new AuthDAOMemory();
 
