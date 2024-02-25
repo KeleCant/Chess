@@ -50,7 +50,7 @@ public class GameDAOMemory implements GameDAO {
         if (ClientColor == "WHITE") {   //add White player
             //check to see if color is taken
             if (updateGameData.whiteUsername() != null){
-                throw new DataAccessException("Exit Code 400 \"Error: bad request\"");
+                throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
             }
             GameDataList.put(gameID, new GameData(
                     gameID,
@@ -62,7 +62,7 @@ public class GameDAOMemory implements GameDAO {
         else if (ClientColor == "BLACK") {  //add Black player
             //check to see if color is taken
             if (updateGameData.blackUsername() != null){
-                throw new DataAccessException("Exit Code 400 \"Error: bad request\"");
+                throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
             }
             GameDataList.put(gameID, new GameData(
                     gameID,
