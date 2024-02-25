@@ -1,9 +1,14 @@
 package server;
 
-import dataAccess.*;
-import spark.*;
-import service.*;
-import model.*;
+import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import service.ClearService;
+import service.UserService;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
+
+import java.util.Map;
 
 public class Server {
 
@@ -29,18 +34,29 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object Clear(Request req, Response res) {
+    private Object Clear(Request request, Response response) {
         try{
             ClearService.clear();
-
+            response.type("application/json");
+            response.status(200);
         }
         catch (DataAccessException exception){
-
+            response.type("application/json");
+            response.status(500);
+            return new Gson().toJson(Map.of("message", exception.getMessage()));
         }
     }
 
-    private Object Register(Request req, Response res){
+    private Object Register(Request request, Response response){
+        try {
+            UserService.register(request);
+        } catch (DataAccessException exception){
 
+        } catch (Exception exception){
+            response.type("application/json");
+            response.status(500);
+            return new Gson().toJson(Map.of("message", exception.getMessage()));
+        }
     }
 
     private Object Login(Request req, Response res){

@@ -10,7 +10,7 @@ import results.RegistrationResult;
 public class UserService {
 
     //Register a new user.
-    public RegistrationResult register (RegistrationRequest request) throws DataAccessException {
+    public static RegistrationResult register(RegistrationRequest request) throws DataAccessException {
         UserDAO UserDAO = new UserDAOMemory();
         AuthDAO AuthDAO = new AuthDAOMemory();
 
