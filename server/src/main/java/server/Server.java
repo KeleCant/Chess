@@ -2,29 +2,23 @@ package server;
 
 import dataAccess.*;
 import spark.*;
+import service.*;
+import model.*;
 
 public class Server {
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
 
     public int run(int desiredPort) {
-        userDAO = new UserDAOMemory();
-        authDAO = new AuthDAOMemory();
-        gameDAO = new GameDAOMemory();
-        Spark.port(8080);
+        Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        //Spark.externalStaticFileLocation("C:\\Users\\kelec\\CS 240\\chess\\web");
-        // Register your endpoints and handle exceptions here.
-        //Spark.delete("/db", (req, res) -> (new ClearHandler()).clear(req, res));
-        //register(username, password, email)
-        //login(username, password)
-        //logout(authToken)
-        //listGames(authToken)
-        //createGame(gameName)
-        //joinGame(ClientColor, gameID)
-        //clearApplication()
+
+        Spark.delete("/db", this::Clear);
+        Spark.post("/user", this::Register);
+        Spark.post("/session", this::Login);
+        Spark.delete("/session", this::Logout);
+        Spark.get("/game", this::ListGames);
+        Spark.post("/game", this::CreateGame);
+        Spark.put("/game", this::JoinGame);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -33,5 +27,39 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object Clear(Request req, Response res) {
+        try{
+            ClearService.clear();
+
+        }
+        catch (DataAccessException exception){
+
+        }
+    }
+
+    private Object Register(Request req, Response res){
+
+    }
+
+    private Object Login(Request req, Response res){
+
+    }
+
+    private Object Logout(Request req, Response res){
+
+    }
+
+    private Object ListGames(Request req, Response res){
+
+    }
+
+    private Object CreateGame(Request req, Response res){
+
+    }
+
+    private Object JoinGame(Request req, Response res){
+
     }
 }
