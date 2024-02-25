@@ -41,4 +41,9 @@ public class AuthDAOMemory implements AuthDAO {
         AuthDataList.remove(authToken);
     }
 
+    @Override
+    public String getUsername(String authToken){
+        return AuthDataList.get(authToken).username();
+    }
+
 }
