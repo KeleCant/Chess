@@ -36,7 +36,7 @@ public class AuthDAOMemory implements AuthDAO {
     @Override
     public void deleteAuth(String authToken) throws DataAccessException{
         if (!AuthDataList.containsKey(authToken)) {
-            throw new DataAccessException("Exit Code 401 \"Error: unauthorized\"");
+            throw new DataAccessException("Error: unauthorized");
         }
         AuthDataList.remove(authToken);
     }

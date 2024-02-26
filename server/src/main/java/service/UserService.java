@@ -1,11 +1,8 @@
 package service;
 
 import dataAccess.*;
-import requests.LoginRequest;
-import requests.LogoutRequest;
-import requests.RegistrationRequest;
-import results.LoginResult;
-import results.RegistrationResult;
+import requests.*;
+import results.*;
 
 public class UserService {
 
@@ -22,7 +19,7 @@ public class UserService {
     }
 
     //Logs in an existing user (returns a new authToken).
-    public LoginResult login(LoginRequest request) throws DataAccessException {
+    public static LoginResult login(LoginRequest request) throws DataAccessException {
         UserDAO userDAO = new UserDAOMemory();
         AuthDAO authDAO = new AuthDAOMemory();
 
@@ -33,9 +30,10 @@ public class UserService {
     }
 
     //Logs out the user represented by the authToken.
-    public void logout(LogoutRequest request) throws DataAccessException {
+    public static LogoutResult logout(LogoutRequest request) throws DataAccessException {
         AuthDAO authDAO = new AuthDAOMemory();
         authDAO.deleteAuth(request.authToken());
+        return new LogoutResult();
     }
 
 }

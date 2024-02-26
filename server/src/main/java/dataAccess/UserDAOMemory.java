@@ -20,7 +20,7 @@ public class UserDAOMemory implements UserDAO {
         UserData newUser = new UserData(username, password, email);
 
         if (UserDataList.containsKey(newUser.username())) {
-            throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
+            throw new DataAccessException("Error: already taken");
         }
         UserDataList.put(newUser.username(), newUser);
         return newUser;
@@ -30,21 +30,21 @@ public class UserDAOMemory implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException{
         if (!UserDataList.containsKey(username)) {
-            throw new DataAccessException("Exit Code 400 \"Error: bad request\"");
+            throw new DataAccessException("Error: bad request");
         }
         return UserDataList.get(username);
     }
     @Override
     public void checkUsername(String username) throws DataAccessException{
         if (!UserDataList.containsKey(username)) {
-            throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
+            throw new DataAccessException("Error: already taken");
         }
     }
 
     @Override
     public void checkPassword(String username, String password) throws DataAccessException{
         if (!Objects.equals(UserDataList.get(username).password(), password)) {
-            throw new DataAccessException("Exit Code 401 \"Error: unauthorized\"");
+            throw new DataAccessException("Error: unauthorized");
         }
     }
 }

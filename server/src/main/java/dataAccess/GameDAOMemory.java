@@ -28,7 +28,7 @@ public class GameDAOMemory implements GameDAO {
     public GameData getGame(int gameID) throws DataAccessException{
         //check to make sure this game ID exits
         if (!GameDataList.containsKey(gameID)){
-            throw new DataAccessException("Exit Code 400 \"Error: bad request\"");
+            throw new DataAccessException("Error: bad request");
         }
         return GameDataList.get(gameID);
     }
@@ -50,7 +50,7 @@ public class GameDAOMemory implements GameDAO {
         if (ClientColor == "WHITE") {   //add White player
             //check to see if color is taken
             if (updateGameData.whiteUsername() != null){
-                throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
+                throw new DataAccessException("Error: already taken");
             }
             GameDataList.put(gameID, new GameData(
                     gameID,
@@ -62,7 +62,7 @@ public class GameDAOMemory implements GameDAO {
         else if (ClientColor == "BLACK") {  //add Black player
             //check to see if color is taken
             if (updateGameData.blackUsername() != null){
-                throw new DataAccessException("Exit Code 403 \"Error: already taken\"");
+                throw new DataAccessException("Error: already taken");
             }
             GameDataList.put(gameID, new GameData(
                     gameID,
@@ -72,7 +72,7 @@ public class GameDAOMemory implements GameDAO {
                     updateGameData.game()));
         }
         else {
-            throw new DataAccessException("Exit Code 400 \"Error: bad request\"");
+            throw new DataAccessException("Error: bad request");
         }
     }
 }
