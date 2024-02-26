@@ -6,10 +6,16 @@ import results.*;
 
 public class GameService {
 
+    static AuthDAO authDAO;
+    static GameDAO gameDAO;
+
+    public GameService(AuthDAO authDAO, GameDAO gameDAO){
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
+    }
+
     //Gives a list of all games.
     public static ListGamesResult listGamesService(ListGamesRequest request) throws DataAccessException {
-        GameDAO gameDAO = new GameDAOMemory();
-        AuthDAO authDAO = new AuthDAOMemory();
         //verify authToken
         if (!authDAO.getAuth(request.authToken()))
             throw new DataAccessException("Error: unauthorized");
@@ -19,8 +25,6 @@ public class GameService {
 
     //Creates a new game.
     public static CreateGameResult createGameService(CreateGameRequest request) throws DataAccessException{
-        GameDAO gameDAO = new GameDAOMemory();
-        AuthDAO authDAO = new AuthDAOMemory();
         //verify authToken
         if (!authDAO.getAuth(request.getAuthToken()))
                 throw new DataAccessException("Error: unauthorized");
@@ -33,8 +37,6 @@ public class GameService {
     // If no color is specified the user is joined as an observer.
     // This request is idempotent.
     public static JoinGameResult joinGameService(JoinGameRequest request) throws DataAccessException {
-        GameDAO gameDAO = new GameDAOMemory();
-        AuthDAO authDAO = new AuthDAOMemory();
         //check auth data
         if (!authDAO.getAuth(request.AuthToken()))
             throw new DataAccessException("Error: unauthorized");
