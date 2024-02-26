@@ -15,11 +15,12 @@ public class AuthDAOMemory implements AuthDAO {
 
     //createAuth: Create a new authorization.
     @Override
-    public String createAuth(String username){
+    public String createAuth(String username) throws DataAccessException {
         String newAuth = UUID.randomUUID().toString();
         //if by chance the random generator generates the same string twice
         if (AuthDataList.containsKey(newAuth)) {
             newAuth = UUID.randomUUID().toString();
+            //throw new DataAccessException("Error: bad request");
         }
         //place the username and string in the List
         AuthDataList.put(newAuth, new AuthData(username, newAuth));
