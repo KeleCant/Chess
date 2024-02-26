@@ -74,7 +74,7 @@ public class ChessGame {
                 TestGameBoard.addPiece(M.getStartPosition(), null);
 
                 //check to see if the King is in check
-                if (IsNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
+                if (isNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
                     moveList.add(M);
                 }
             }
@@ -95,14 +95,14 @@ public class ChessGame {
             TestGameBoard.addPiece(M.getStartPosition(), null);
 
             //check to see if the King is in check
-            if (IsNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
+            if (isNotCheck(TestGameBoard, GameBoard.getPiece(startPosition).getTeamColor())){
                 moveList.add(M);
             }
         }
         return moveList;
     }
 
-    public Collection<ChessPosition> GetEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
+    public Collection<ChessPosition> getEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
         Collection<ChessPosition> moves = new HashSet<>();
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
@@ -175,14 +175,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessPosition> EnemyMoves = ReturnEnemyMoves(GameBoard, teamColor);
-        return EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
+        Collection<ChessPosition> EnemyMoves = returnEnemyMoves(GameBoard, teamColor);
+        return EnemyMoves.contains(findKingPosition(GameBoard, teamColor));
     }
-    public boolean IsNotCheck(ChessBoard GameBoard,TeamColor teamColor) {
-        Collection<ChessPosition> EnemyMoves = GetEnemyMoves(GameBoard, teamColor);
-        if (FindKingPosition(GameBoard, teamColor) == null)
+    public boolean isNotCheck(ChessBoard GameBoard,TeamColor teamColor) {
+        Collection<ChessPosition> EnemyMoves = getEnemyMoves(GameBoard, teamColor);
+        if (findKingPosition(GameBoard, teamColor) == null)
             return true;
-        return !EnemyMoves.contains(FindKingPosition(GameBoard, teamColor));
+        return !EnemyMoves.contains(findKingPosition(GameBoard, teamColor));
     }
 
     /**
@@ -195,20 +195,20 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
 
         //logic code for tests
-        if (FindKingPosition(GameBoard, teamColor) == null)
+        if (findKingPosition(GameBoard, teamColor) == null)
             return false;
 
         if (isInCheck(teamColor))
             return false;
 
         //check to see if any pieces can move that are not the king
-        if (GetTeamMoves(teamColor).size() > GetKingMoves(teamColor).size()){
+        if (getTeamMoves(teamColor).size() > getKingMoves(teamColor).size()){
             return false;
         }
 
         //Check to see if the king can move
-        for (ChessPosition M: GetKingMoves(teamColor)){
-            if (!ReturnEnemyMoves(GameBoard, teamColor).contains(M)){
+        for (ChessPosition M: getKingMoves(teamColor)){
+            if (!returnEnemyMoves(GameBoard, teamColor).contains(M)){
                 return false;
             }
         }
@@ -230,7 +230,7 @@ public class ChessGame {
 
         //Check to see if the king can move
         Collection<ChessPosition> totalEnemyMoves = new HashSet<>();
-        for (ChessPosition M: GetKingMoves(teamColor)) {
+        for (ChessPosition M: getKingMoves(teamColor)) {
             //creates a new chessboard step by step
             ChessBoard CheckGameBoard = new ChessBoard();
             for (int i=1; i<9; i++){
@@ -241,13 +241,13 @@ public class ChessGame {
 
             //creates a new board with the king moved to this position
             CheckGameBoard.addPiece(M.getRow(), M.getColumn(), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
-            CheckGameBoard.addPiece(FindKingPosition(GameBoard, teamColor), null);
+            CheckGameBoard.addPiece(findKingPosition(GameBoard, teamColor), null);
 
-            totalEnemyMoves.addAll(ReturnEnemyMoves(CheckGameBoard,teamColor));
+            totalEnemyMoves.addAll(returnEnemyMoves(CheckGameBoard,teamColor));
         }
 
         //Collection<ChessPosition> Test1 = GetKingMoves(teamColor);
-        for (ChessPosition M: GetKingMoves(teamColor)) {
+        for (ChessPosition M: getKingMoves(teamColor)) {
             if (!totalEnemyMoves.contains(M)){
                 return false;
             }
@@ -256,7 +256,7 @@ public class ChessGame {
         return true;
     }
 
-    public ChessPosition FindKingPosition(ChessBoard GameBoard, TeamColor teamColor){
+    public ChessPosition findKingPosition(ChessBoard GameBoard, TeamColor teamColor){
         for (int j=1; j<9; j++){
             for (int i=1; i<9; i++) {
                 if (GameBoard.getPiece(i, j) != null) {
@@ -269,15 +269,15 @@ public class ChessGame {
         return null;
     }
 
-    public Collection<ChessPosition> GetKingMoves(TeamColor teamColor){
+    public Collection<ChessPosition> getKingMoves(TeamColor teamColor){
         Collection<ChessPosition> moves = new HashSet<>();
-        for (ChessMove M : GameBoard.getPiece(FindKingPosition(GameBoard, teamColor)).pieceMoves(GameBoard, FindKingPosition(GameBoard, teamColor))) {
+        for (ChessMove M : GameBoard.getPiece(findKingPosition(GameBoard, teamColor)).pieceMoves(GameBoard, findKingPosition(GameBoard, teamColor))) {
             moves.add(M.getEndPosition());
         }
         return moves;
     }
 
-    public Collection<ChessPosition> ReturnEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
+    public Collection<ChessPosition> returnEnemyMoves(ChessBoard GameBoard, TeamColor teamColor){
         Collection<ChessPosition> moves = new HashSet<>();
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){
@@ -293,7 +293,7 @@ public class ChessGame {
         return moves;
     }
 
-    public Collection<ChessPosition> GetTeamMoves(TeamColor teamColor){
+    public Collection<ChessPosition> getTeamMoves(TeamColor teamColor){
         Collection<ChessPosition> moves = new HashSet<>();
         for (int i=1; i<9; i++){
             for (int j=1; j<9; j++){

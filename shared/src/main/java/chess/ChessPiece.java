@@ -57,63 +57,63 @@ public class ChessPiece {
 
         //Bishop
         if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP){
-            collection = AddMultiplePosition(1, 1, board, myPosition, collection);      //Up-Right
-            collection = AddMultiplePosition(-1, 1, board, myPosition, collection);     //Down-Right
-            collection = AddMultiplePosition(-1, -1, board, myPosition, collection);    //Down-Left
-            collection = AddMultiplePosition(1, -1, board, myPosition, collection);     //Up-Left
+            collection = addMultiplePosition(1, 1, board, myPosition, collection);      //Up-Right
+            collection = addMultiplePosition(-1, 1, board, myPosition, collection);     //Down-Right
+            collection = addMultiplePosition(-1, -1, board, myPosition, collection);    //Down-Left
+            collection = addMultiplePosition(1, -1, board, myPosition, collection);     //Up-Left
 
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK){
-            collection = AddMultiplePosition(1, 0, board, myPosition, collection);      //Up
-            collection = AddMultiplePosition(0, 1, board, myPosition, collection);      //Right
-            collection = AddMultiplePosition(-1, 0, board, myPosition, collection);     //Down
-            collection = AddMultiplePosition(0, -1, board, myPosition, collection);     //Left
+            collection = addMultiplePosition(1, 0, board, myPosition, collection);      //Up
+            collection = addMultiplePosition(0, 1, board, myPosition, collection);      //Right
+            collection = addMultiplePosition(-1, 0, board, myPosition, collection);     //Down
+            collection = addMultiplePosition(0, -1, board, myPosition, collection);     //Left
 
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN){
-            collection = AddMultiplePosition(1, 1, board, myPosition, collection);      //Up-Right
-            collection = AddMultiplePosition(-1, 1, board, myPosition, collection);     //Down-Right
-            collection = AddMultiplePosition(-1, -1, board, myPosition, collection);    //Down-Left
-            collection = AddMultiplePosition(1, -1, board, myPosition, collection);     //Up-Left
-            collection = AddMultiplePosition(1, 0, board, myPosition, collection);      //Up
-            collection = AddMultiplePosition(0, 1, board, myPosition, collection);      //Right
-            collection = AddMultiplePosition(-1, 0, board, myPosition, collection);     //Down
-            collection = AddMultiplePosition(0, -1, board, myPosition, collection);     //Left
+            collection = addMultiplePosition(1, 1, board, myPosition, collection);      //Up-Right
+            collection = addMultiplePosition(-1, 1, board, myPosition, collection);     //Down-Right
+            collection = addMultiplePosition(-1, -1, board, myPosition, collection);    //Down-Left
+            collection = addMultiplePosition(1, -1, board, myPosition, collection);     //Up-Left
+            collection = addMultiplePosition(1, 0, board, myPosition, collection);      //Up
+            collection = addMultiplePosition(0, 1, board, myPosition, collection);      //Right
+            collection = addMultiplePosition(-1, 0, board, myPosition, collection);     //Down
+            collection = addMultiplePosition(0, -1, board, myPosition, collection);     //Left
 
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.KING){
-            collection = AddSinglePosition(1,0, board, myPosition, collection);     //up
-            collection = AddSinglePosition(1,1, board, myPosition, collection);     //up-right
-            collection = AddSinglePosition(0,1, board, myPosition, collection);     //right
-            collection = AddSinglePosition(-1,1, board, myPosition, collection);    //down-right
-            collection = AddSinglePosition(-1,0, board, myPosition, collection);    //down
-            collection = AddSinglePosition(-1,-1, board, myPosition, collection);   //down-left
-            collection = AddSinglePosition(0,-1, board, myPosition, collection);    //left
-            collection = AddSinglePosition(1,-1, board, myPosition, collection);    //up-left
+            collection = addSinglePosition(1,0, board, myPosition, collection);     //up
+            collection = addSinglePosition(1,1, board, myPosition, collection);     //up-right
+            collection = addSinglePosition(0,1, board, myPosition, collection);     //right
+            collection = addSinglePosition(-1,1, board, myPosition, collection);    //down-right
+            collection = addSinglePosition(-1,0, board, myPosition, collection);    //down
+            collection = addSinglePosition(-1,-1, board, myPosition, collection);   //down-left
+            collection = addSinglePosition(0,-1, board, myPosition, collection);    //left
+            collection = addSinglePosition(1,-1, board, myPosition, collection);    //up-left
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT){
-            collection = AddSinglePosition(2,1, board, myPosition, collection);      //up-up-right
-            collection = AddSinglePosition(1,2, board, myPosition, collection);      //up-right-right
-            collection = AddSinglePosition(-1,2, board, myPosition, collection);     //down-right-right
-            collection = AddSinglePosition(-2,1, board, myPosition, collection);     //down-down-right
-            collection = AddSinglePosition(-2,-1, board, myPosition, collection);    //down-down-left
-            collection = AddSinglePosition(-1,-2, board, myPosition, collection);    //down-left-left
-            collection = AddSinglePosition(1,-2, board, myPosition, collection);     //up-left-left
-            collection = AddSinglePosition(2,-1, board, myPosition, collection);      //up-up-left
+            collection = addSinglePosition(2,1, board, myPosition, collection);      //up-up-right
+            collection = addSinglePosition(1,2, board, myPosition, collection);      //up-right-right
+            collection = addSinglePosition(-1,2, board, myPosition, collection);     //down-right-right
+            collection = addSinglePosition(-2,1, board, myPosition, collection);     //down-down-right
+            collection = addSinglePosition(-2,-1, board, myPosition, collection);    //down-down-left
+            collection = addSinglePosition(-1,-2, board, myPosition, collection);    //down-left-left
+            collection = addSinglePosition(1,-2, board, myPosition, collection);     //up-left-left
+            collection = addSinglePosition(2,-1, board, myPosition, collection);      //up-up-left
 
             return collection;
         }
         else if (board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
             //White
             if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
-                if (IsEmpty(1,0,board,myPosition) && IsEmpty(2,0,board,myPosition) && myPosition.getRow()==2){
+                if (isEmpty(1,0,board,myPosition) && isEmpty(2,0,board,myPosition) && myPosition.getRow()==2){
                     collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+2, myPosition.getColumn()), null));
                 }
-                if (IsEmpty(1,0,board,myPosition)){
+                if (isEmpty(1,0,board,myPosition)){
                     if(myPosition.getRow()+1==8){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()), PieceType.ROOK));
@@ -124,7 +124,7 @@ public class ChessPiece {
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()), null));
                     }
                 }
-                if (IsEnemy(1,1,board,myPosition)){
+                if (isEnemy(1,1,board,myPosition)){
                     if(myPosition.getRow()+1==8){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1), PieceType.ROOK));
@@ -135,7 +135,7 @@ public class ChessPiece {
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1), null));
                     }
                 }
-                if (IsEnemy(1,-1,board,myPosition)){
+                if (isEnemy(1,-1,board,myPosition)){
                     if(myPosition.getRow()+1==8){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1), PieceType.ROOK));
@@ -149,10 +149,10 @@ public class ChessPiece {
             }
             //Black
             else{
-                if (IsEmpty(-1,0,board,myPosition) && IsEmpty(-2,0,board,myPosition) && myPosition.getRow()==7){
+                if (isEmpty(-1,0,board,myPosition) && isEmpty(-2,0,board,myPosition) && myPosition.getRow()==7){
                     collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-2, myPosition.getColumn()), null));
                 }
-                if (IsEmpty(-1,0,board,myPosition)){
+                if (isEmpty(-1,0,board,myPosition)){
                     if(myPosition.getRow()-1==1){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()), PieceType.ROOK));
@@ -163,7 +163,7 @@ public class ChessPiece {
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()), null));
                     }
                 }
-                if (IsEnemy(-1,1,board,myPosition)){
+                if (isEnemy(-1,1,board,myPosition)){
                     if(myPosition.getRow()-1==1){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1), PieceType.ROOK));
@@ -174,7 +174,7 @@ public class ChessPiece {
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()+1), null));
                     }
                 }
-                if (IsEnemy(-1,-1,board,myPosition)){
+                if (isEnemy(-1,-1,board,myPosition)){
                     if(myPosition.getRow()-1==1){
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1), PieceType.QUEEN));
                         collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()-1, myPosition.getColumn()-1), PieceType.ROOK));
@@ -192,8 +192,8 @@ public class ChessPiece {
         return collection;
     }
 
-    private boolean IsEmpty(int up, int right, ChessBoard board, ChessPosition myPosition){
-        if (IsInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
+    private boolean isEmpty(int up, int right, ChessBoard board, ChessPosition myPosition){
+        if (isInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
             if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right) == null){
                 return true;
             }
@@ -206,8 +206,8 @@ public class ChessPiece {
         }
     }
 
-    private boolean IsEnemy(int up, int right, ChessBoard board, ChessPosition myPosition){
-        if(IsInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
+    private boolean isEnemy(int up, int right, ChessBoard board, ChessPosition myPosition){
+        if(isInbounds(myPosition.getRow()+up, myPosition.getColumn()+right)){
             if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right) != null){
                 if (board.getPiece(myPosition.getRow()+up, myPosition.getColumn()+right).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     return true;
@@ -220,19 +220,19 @@ public class ChessPiece {
         return false;
     }
 
-    private HashSet<ChessMove> AddSinglePosition(int up, int right, ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> collection){
-        if (IsEmpty(up,right,board,myPosition) || IsEnemy(up,right,board,myPosition))
+    private HashSet<ChessMove> addSinglePosition(int up, int right, ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> collection){
+        if (isEmpty(up,right,board,myPosition) || isEnemy(up,right,board,myPosition))
             collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+up, myPosition.getColumn()+right), null));
         return collection;
     }
 
-    private HashSet<ChessMove> AddMultiplePosition(int up, int right, ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> collection) {
+    private HashSet<ChessMove> addMultiplePosition(int up, int right, ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> collection) {
         for (int i = 1; i < 8; i++) {
-            if (!IsInbounds(myPosition.getRow() + i*up, myPosition.getColumn() + i*right)) {
+            if (!isInbounds(myPosition.getRow() + i*up, myPosition.getColumn() + i*right)) {
                 break;
-            } else if (IsEmpty(i*up, i*right, board, myPosition)) {
+            } else if (isEmpty(i*up, i*right, board, myPosition)) {
                 collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i*up, myPosition.getColumn() + i*right), null));
-            } else if (IsEnemy(i*up, i*right, board, myPosition)) {
+            } else if (isEnemy(i*up, i*right, board, myPosition)) {
                 collection.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i*up, myPosition.getColumn() + i*right), null));
                 break;
             } else {
@@ -243,7 +243,7 @@ public class ChessPiece {
     }
 
 
-    private boolean IsInbounds(int row, int col){
+    private boolean isInbounds(int row, int col){
         if (row > 8 || row < 1 || col > 8 || col < 1){
             return false;
         }
