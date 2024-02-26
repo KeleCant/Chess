@@ -24,13 +24,13 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        Spark.delete("/db", this::ClearHandler);
-        Spark.post("/user", this::RegisterHandler);
-        Spark.post("/session", this::LoginHandler);
-        Spark.delete("/session", this::LogoutHandler);
-        Spark.get("/game", this::ListGamesHandler);
-        Spark.post("/game", this::CreateGameHandler);
-        Spark.put("/game", this::JoinGameHandler);
+        Spark.delete("/db", this::clearHandler);
+        Spark.post("/user", this::registerHandler);
+        Spark.post("/session", this::loginHandler);
+        Spark.delete("/session", this::logoutHandler);
+        Spark.get("/game", this::listGamesHandler);
+        Spark.post("/game", this::createGameHandler);
+        Spark.put("/game", this::joinGameHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -41,13 +41,13 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object ClearHandler (Request req, Response res) {
+    private Object clearHandler (Request req, Response res) {
         ClearService.clear(authDAO, gameDAO, userDAO);
         res.status(200);
         return new Gson().toJson(new JsonErrorMessage(""));
     }
 
-    private Object RegisterHandler (Request req, Response res){
+    private Object registerHandler (Request req, Response res){
         try {
             RegistrationRequest request = new Gson().fromJson(req.body(), RegistrationRequest.class);
             UserService userService = new UserService(authDAO, userDAO);
@@ -61,7 +61,7 @@ public class Server {
         }
     }
 
-    private Object LoginHandler (Request req, Response res){
+    private Object loginHandler (Request req, Response res){
         try {
             LoginRequest request = new Gson().fromJson(req.body(), LoginRequest.class);
             UserService userService = new UserService(authDAO, userDAO);
@@ -75,7 +75,7 @@ public class Server {
         }
     }
 
-    private Object LogoutHandler (Request req, Response res){
+    private Object logoutHandler (Request req, Response res){
         try {
             //LogoutRequest request = new Gson().fromJson(req.body(), LogoutRequest.class);
             LogoutRequest request = new LogoutRequest(req.headers("authorization"));
@@ -90,7 +90,7 @@ public class Server {
         }
     }
 
-    private Object ListGamesHandler (Request req, Response res){
+    private Object listGamesHandler (Request req, Response res){
         try {
             //LogoutRequest request = new Gson().fromJson(req.body(), LogoutRequest.class);
             ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
@@ -105,7 +105,7 @@ public class Server {
         }
     }
 
-    private Object CreateGameHandler (Request req, Response res){
+    private Object createGameHandler (Request req, Response res){
         try {
             CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);
             request.setAuthToken(req.headers("authorization"));
@@ -120,7 +120,7 @@ public class Server {
         }
     }
 
-    private Object JoinGameHandler (Request req, Response res){
+    private Object joinGameHandler (Request req, Response res){
         try {
             JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);
             request.setAuthToken(req.headers("authorization"));

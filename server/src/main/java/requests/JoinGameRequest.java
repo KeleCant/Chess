@@ -19,11 +19,11 @@ public class JoinGameRequest {
         this.authToken = authToken;
     }
 
-    public String AuthToken(){
+    public String authToken(){
         return authToken;
     }
 
-    public String ClientColor(){
+    public String clientColor(){
         return ClientColor;
     }
 

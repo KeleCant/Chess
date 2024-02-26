@@ -38,11 +38,11 @@ public class GameService {
     // This request is idempotent.
     public static JoinGameResult joinGameService(JoinGameRequest request) throws DataAccessException {
         //check auth data
-        if (!authDAO.getAuth(request.AuthToken()))
+        if (!authDAO.getAuth(request.authToken()))
             throw new DataAccessException("Error: unauthorized");
 
         //intert user
-        gameDAO.updateGame(request.AuthToken(),request.gameID(),request.ClientColor());
+        gameDAO.updateGame(request.authToken(),request.gameID(),request.clientColor());
         return new JoinGameResult();
     }
 }
