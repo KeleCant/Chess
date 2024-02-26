@@ -17,6 +17,10 @@ public class UserService {
     //Register a new user.
     public static RegistrationResult register(RegistrationRequest request) throws DataAccessException {
 
+        //make sure no values are null
+        if (request.username() == null || request.password() == null || request.email() == null)
+            throw new DataAccessException("Error: bad request");
+
         //check to see if username is taken
         userDAO.checkUsername(request.username());
 

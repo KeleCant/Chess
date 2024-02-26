@@ -36,7 +36,7 @@ public class UserDAOMemory implements UserDAO {
     }
     @Override
     public void checkUsername(String username) throws DataAccessException{
-        if (!UserDataList.containsKey(username)) {
+        if (UserDataList.containsKey(username)) {
             throw new DataAccessException("Error: already taken");
         }
     }
