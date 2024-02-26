@@ -2,16 +2,16 @@ package requests;
 
 public class JoinGameRequest {
     private String authToken;
-    private String ClientColor;
+    private String clientColor;
     private int gameID;
 
     JoinGameRequest(String authToken, String ClientColor, int gameID){
         this.authToken = authToken;
-        this.ClientColor = ClientColor;
+        this.clientColor = ClientColor;
         this.gameID = gameID;
     }
     JoinGameRequest(String ClientColor, int gameID){
-        this.ClientColor = ClientColor;
+        this.clientColor = ClientColor;
         this.gameID = gameID;
     }
 
@@ -24,7 +24,7 @@ public class JoinGameRequest {
     }
 
     public String clientColor(){
-        return ClientColor;
+        return clientColor;
     }
 
     public int gameID(){

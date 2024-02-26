@@ -7,19 +7,19 @@ import java.util.HashMap;
 
 
 public class GameDAOMemory implements GameDAO {
-    private HashMap<Integer, GameData> GameDataList = new HashMap<>();
+    private HashMap<Integer, GameData> gameDataList = new HashMap<>();
 
     //clear: A method for clearing all data from the database. This is used during testing.
     @Override
     public void clear(){
-        GameDataList.clear();
+        gameDataList.clear();
     }
 
     //createGame: Create a new game.
     @Override
     public int createGame(String gameName){
-        int gameID = GameDataList.size()+1;
-        GameDataList.put(gameID, new GameData(gameID, null, null, gameName, new ChessGame()));
+        int gameID = gameDataList.size()+1;
+        gameDataList.put(gameID, new GameData(gameID, null, null, gameName, new ChessGame()));
         return gameID;
     }
 
@@ -27,16 +27,16 @@ public class GameDAOMemory implements GameDAO {
     @Override
     public GameData getGame(int gameID) throws DataAccessException{
         //check to make sure this game ID exits
-        if (!GameDataList.containsKey(gameID)){
+        if (!gameDataList.containsKey(gameID)){
             throw new DataAccessException("Error: bad request");
         }
-        return GameDataList.get(gameID);
+        return gameDataList.get(gameID);
     }
 
     //listGames: Retrieve all games.
     @Override
     public HashSet<GameData> listGame(){
-        return new HashSet<GameData>(GameDataList.values());
+        return new HashSet<GameData>(gameDataList.values());
     }
 
     //updateGame: Updates a chess game.
@@ -45,14 +45,14 @@ public class GameDAOMemory implements GameDAO {
     @Override
     public void updateGame(String authToken, int gameID, String ClientColor) throws DataAccessException {
         AuthDAO authDAO = new AuthDAOMemory();
-        GameData updateGameData = GameDataList.get(gameID);
+        GameData updateGameData = gameDataList.get(gameID);
 
         if (ClientColor == "WHITE") {   //add White player
             //check to see if color is taken
             if (updateGameData.whiteUsername() != null){
                 throw new DataAccessException("Error: already taken");
             }
-            GameDataList.put(gameID, new GameData(
+            gameDataList.put(gameID, new GameData(
                     gameID,
                     authDAO.getUsername(authToken),
                     updateGameData.blackUsername(),
@@ -64,7 +64,7 @@ public class GameDAOMemory implements GameDAO {
             if (updateGameData.blackUsername() != null){
                 throw new DataAccessException("Error: already taken");
             }
-            GameDataList.put(gameID, new GameData(
+            gameDataList.put(gameID, new GameData(
                     gameID,
                     updateGameData.whiteUsername(),
                     authDAO.getUsername(authToken),
