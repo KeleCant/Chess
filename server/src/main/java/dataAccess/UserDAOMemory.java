@@ -43,6 +43,10 @@ public class UserDAOMemory implements UserDAO {
 
     @Override
     public void checkPassword(String username, String password) throws DataAccessException{
+        //make sure user is in the system
+        if (!userDataList.containsKey(username))
+            throw new DataAccessException("Error: unauthorized");
+
         if (!Objects.equals(userDataList.get(username).password(), password)) {
             throw new DataAccessException("Error: unauthorized");
         }
