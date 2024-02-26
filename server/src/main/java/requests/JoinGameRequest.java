@@ -5,13 +5,13 @@ public class JoinGameRequest {
     private String clientColor;
     private int gameID;
 
-    JoinGameRequest(String authToken, String ClientColor, int gameID){
+    JoinGameRequest(String authToken, String clientColor, int gameID){
         this.authToken = authToken;
-        this.clientColor = ClientColor;
+        this.clientColor = clientColor;
         this.gameID = gameID;
     }
-    JoinGameRequest(String ClientColor, int gameID){
-        this.clientColor = ClientColor;
+    JoinGameRequest(String clientColor, int gameID){
+        this.clientColor = clientColor;
         this.gameID = gameID;
     }
 

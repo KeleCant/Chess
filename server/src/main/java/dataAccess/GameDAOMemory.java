@@ -43,11 +43,11 @@ public class GameDAOMemory implements GameDAO {
     //It should replace the chess game string corresponding to a given gameID.
     //This is used when players join a game or when a move is made. fixme this does not apply to new moves made
     @Override
-    public void updateGame(String authToken, int gameID, String ClientColor) throws DataAccessException {
+    public void updateGame(String authToken, int gameID, String clientColor) throws DataAccessException {
         AuthDAO authDAO = new AuthDAOMemory();
         GameData updateGameData = gameDataList.get(gameID);
 
-        if (ClientColor == "WHITE") {   //add White player
+        if (clientColor == "WHITE") {   //add White player
             //check to see if color is taken
             if (updateGameData.whiteUsername() != null){
                 throw new DataAccessException("Error: already taken");
@@ -59,7 +59,7 @@ public class GameDAOMemory implements GameDAO {
                     updateGameData.gameName(),
                     updateGameData.game()));
         }
-        else if (ClientColor == "BLACK") {  //add Black player
+        else if (clientColor == "BLACK") {  //add Black player
             //check to see if color is taken
             if (updateGameData.blackUsername() != null){
                 throw new DataAccessException("Error: already taken");

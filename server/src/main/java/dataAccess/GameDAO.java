@@ -9,6 +9,6 @@ public interface GameDAO {
     int createGame(String gameName);
     GameData getGame(int gameID) throws DataAccessException;
     HashSet<GameData> listGame();
-    void updateGame(String authToken, int gameID, String ClientColor) throws DataAccessException;
+    void updateGame(String authToken, int gameID, String clientColor) throws DataAccessException;
 
 }
