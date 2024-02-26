@@ -15,29 +15,9 @@ import results.*;
 import dataAccess.*;
 
 public class Server {
-    private final AuthDAOMemory authDAO;
-    private final GameDAOMemory gameDAO;
-    private final UserDAOMemory userDAO;
-
-
-    public Server(){
-        this.authDAO = new AuthDAOMemory();
-        this.gameDAO = new GameDAOMemory();
-        this.userDAO = new UserDAOMemory();
-    }
-
-
-//    public static void main(String[] args){
-//        try{
-//            int port = Integer.parseInt(args[0]);
-//            Server temp = new Server();
-//            temp.run(port);
-//        }
-//        catch (Exception exp){
-//            System.err.println(exp.getMessage());
-//        }
-//    }
-
+    private final AuthDAOMemory authDAO = new AuthDAOMemory();
+    private final GameDAOMemory gameDAO = new GameDAOMemory();
+    private final UserDAOMemory userDAO = new UserDAOMemory();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -62,7 +42,7 @@ public class Server {
     }
 
     private Object ClearHandler (Request req, Response res) {
-        ClearService.clear();
+        ClearService.clear(authDAO, gameDAO, userDAO);
         res.status(200);
         return new Gson().toJson(new JsonErrorMessage(""));
     }
@@ -70,7 +50,8 @@ public class Server {
     private Object RegisterHandler (Request req, Response res){
         try {
             RegistrationRequest request = new Gson().fromJson(req.body(), RegistrationRequest.class);
-            Object object = UserService.register(request);
+            UserService userService = new UserService(authDAO, userDAO);
+            Object object = userService.register(request);
             res.status(200);
             return new Gson().toJson(object);
         }
@@ -83,7 +64,8 @@ public class Server {
     private Object LoginHandler (Request req, Response res){
         try {
             LoginRequest request = new Gson().fromJson(req.body(), LoginRequest.class);
-            Object object = UserService.login(request);
+            UserService userService = new UserService(authDAO, userDAO);
+            Object object = userService.login(request);
             res.status(200);
             return new Gson().toJson(object);
         }
@@ -97,7 +79,8 @@ public class Server {
         try {
             //LogoutRequest request = new Gson().fromJson(req.body(), LogoutRequest.class);
             LogoutRequest request = new LogoutRequest(req.headers("authorization"));
-            Object object = UserService.logout(request);
+            UserService userService = new UserService(authDAO, userDAO);
+            Object object = userService.logout(request);
             res.status(200);
             return new Gson().toJson(object);
         }
@@ -111,7 +94,8 @@ public class Server {
         try {
             //LogoutRequest request = new Gson().fromJson(req.body(), LogoutRequest.class);
             ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
-            Object object = GameService.listGamesService(request);
+            GameService gameService = new GameService(authDAO, gameDAO);
+            Object object = gameService.listGamesService(request);
             res.status(200);
             return new Gson().toJson(object);
         }
@@ -125,7 +109,8 @@ public class Server {
         try {
             CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);
             request.setAuthToken(req.headers("authorization"));
-            Object object = GameService.createGameService(request);
+            GameService gameService = new GameService(authDAO, gameDAO);
+            Object object = gameService.createGameService(request);
             res.status(200);
             return new Gson().toJson(object);
         }
@@ -139,7 +124,8 @@ public class Server {
         try {
             JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);
             request.setAuthToken(req.headers("authorization"));
-            Object object = GameService.joinGameService(request);
+            GameService gameService = new GameService(authDAO, gameDAO);
+            Object object = gameService.joinGameService(request);
             res.status(200);
             return new Gson().toJson(object);
         }
