@@ -186,14 +186,14 @@ public class ChessGame {
             return false;
 
         //getenemyteam moves
-        TeamColor EnemyteamColor;
+        TeamColor enemyteamColor;
         if(teamColor == TeamColor.WHITE)
-            EnemyteamColor = TeamColor.BLACK;
+            enemyteamColor = TeamColor.BLACK;
         else
-            EnemyteamColor = TeamColor.WHITE;
+            enemyteamColor = TeamColor.WHITE;
 
         //check to see if any pieces can move that are not the king
-        if (returnEnemyMoves(gameBoard, EnemyteamColor).size() > getKingMoves(teamColor).size()){
+        if (returnEnemyMoves(gameBoard, enemyteamColor).size() > getKingMoves(teamColor).size()){
             return false;
         }
 
