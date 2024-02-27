@@ -185,8 +185,15 @@ public class ChessGame {
         if (isInCheck(teamColor))
             return false;
 
+        //getenemyteam moves
+        TeamColor EnemyteamColor;
+        if(teamColor == TeamColor.WHITE)
+            EnemyteamColor = TeamColor.BLACK;
+        else
+            EnemyteamColor = TeamColor.WHITE;
+
         //check to see if any pieces can move that are not the king
-        if (getTeamMoves(teamColor).size() > getKingMoves(teamColor).size()){
+        if (returnEnemyMoves(gameBoard, EnemyteamColor).size() > getKingMoves(teamColor).size()){
             return false;
         }
 
@@ -267,22 +274,6 @@ public class ChessGame {
             for (int j=1; j<9; j++){
                 if (gameBoard.getPiece(i, j) != null) {
                     if (gameBoard.getPiece(i, j).getTeamColor() != teamColor) {
-                        for (ChessMove m : gameBoard.getPiece(i, j).pieceMoves(gameBoard, new ChessPosition(i, j))) {
-                            moves.add(m.getEndPosition());
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
-    }
-
-    public Collection<ChessPosition> getTeamMoves(TeamColor teamColor){
-        Collection<ChessPosition> moves = new HashSet<>();
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
-                if (gameBoard.getPiece(i, j) != null) {
-                    if (gameBoard.getPiece(i, j).getTeamColor() == teamColor) {
                         for (ChessMove m : gameBoard.getPiece(i, j).pieceMoves(gameBoard, new ChessPosition(i, j))) {
                             moves.add(m.getEndPosition());
                         }
