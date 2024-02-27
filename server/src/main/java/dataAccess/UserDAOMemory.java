@@ -45,11 +45,6 @@ public class UserDAOMemory implements UserDAO {
     }
 
     @Override
-    public HashMap<String, UserData> getMap (){
-        return userDataList;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
