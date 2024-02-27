@@ -42,6 +42,7 @@ public class UserDAOMemory implements UserDAO {
         if (!Objects.equals(userDataList.get(username).password(), password)) {
             throw new DataAccessException("Error: unauthorized");
         }
+        HashMap<String, UserData> t = getMap();
     }
 
     @Override
