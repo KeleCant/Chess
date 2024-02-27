@@ -43,4 +43,22 @@ public class UserDAOMemory implements UserDAO {
             throw new DataAccessException("Error: unauthorized");
         }
     }
+
+    @Override
+    public HashMap<String, UserData> getMap (){
+        return userDataList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDAOMemory that = (UserDAOMemory) o;
+        return Objects.equals(userDataList, that.userDataList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userDataList);
+    }
 }

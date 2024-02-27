@@ -4,6 +4,7 @@ import chess.*;
 import model.*;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class GameDAOMemory implements GameDAO {
@@ -69,5 +70,22 @@ public class GameDAOMemory implements GameDAO {
         else {
             throw new DataAccessException("Error: bad request");
         }
+    }
+
+    public HashMap<Integer, GameData> getMap() {
+        return gameDataList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameDAOMemory that = (GameDAOMemory) o;
+        return Objects.equals(gameDataList, that.gameDataList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gameDataList);
     }
 }

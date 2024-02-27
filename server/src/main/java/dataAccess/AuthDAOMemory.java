@@ -2,6 +2,8 @@ package dataAccess;
 
 import java.util.HashMap;
 import model.AuthData;
+
+import java.util.Objects;
 import java.util.UUID;
 
 public class AuthDAOMemory implements AuthDAO {
@@ -47,4 +49,20 @@ public class AuthDAOMemory implements AuthDAO {
         return authDataList.get(authToken).username();
     }
 
+    public HashMap<String, AuthData> getMap() {
+        return authDataList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthDAOMemory that = (AuthDAOMemory) o;
+        return Objects.equals(authDataList, that.authDataList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authDataList);
+    }
 }
