@@ -102,22 +102,6 @@ public class ChessGame {
         return moveList;
     }
 
-    public Collection<ChessPosition> getEnemyMoves(ChessBoard gameBoard, TeamColor teamColor){
-        Collection<ChessPosition> moves = new HashSet<>();
-        for (int i=1; i<9; i++){
-            for (int j=1; j<9; j++){
-                if (gameBoard.getPiece(i, j) != null) {
-                    if (gameBoard.getPiece(i, j).getTeamColor() != teamColor) {
-                        for (ChessMove m : gameBoard.getPiece(i, j).pieceMoves(gameBoard, new ChessPosition(i, j))) {
-                            moves.add(m.getEndPosition());
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
-    }
-
     /**
      * Makes a move in a chess game
      *
@@ -179,7 +163,7 @@ public class ChessGame {
         return enemyMoves.contains(findKingPosition(gameBoard, teamColor));
     }
     public boolean isNotCheck(ChessBoard gameBoard,TeamColor teamColor) {
-        Collection<ChessPosition> enemyMoves = getEnemyMoves(gameBoard, teamColor);
+        Collection<ChessPosition> enemyMoves = returnEnemyMoves(gameBoard, teamColor);
         if (findKingPosition(gameBoard, teamColor) == null)
             return true;
         return !enemyMoves.contains(findKingPosition(gameBoard, teamColor));
