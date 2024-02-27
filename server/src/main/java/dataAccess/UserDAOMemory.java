@@ -26,14 +26,6 @@ public class UserDAOMemory implements UserDAO {
         return newUser;
     }
 
-//    //getUser: Retrieve a user with the given username.
-//    @Override
-//    public UserData getUser(String username) throws DataAccessException{
-//        if (!userDataList.containsKey(username)) {
-//            throw new DataAccessException("Error: bad request");
-//        }
-//        return userDataList.get(username);
-//    }
     @Override
     public void checkUsername(String username) throws DataAccessException{
         if (userDataList.containsKey(username)) {
