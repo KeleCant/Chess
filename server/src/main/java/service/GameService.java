@@ -40,9 +40,12 @@ public class GameService {
         //check auth data
         if (!authDAO.getAuth(request.authToken()))
             throw new DataAccessException("Error: unauthorized");
+        //make sure game exists
+        if (!gameDAO.doesGameExist(request.gameID()))
+            throw new DataAccessException("Error: bad request");
 
         //intert user
-        gameDAO.updateGame(request.authToken(),request.gameID(),request.clientColor());
+        gameDAO.updateGame(request.authToken(),request.gameID(),request.clientColor(), authDAO);
         return new JoinGameResult();
     }
 }

@@ -8,7 +8,8 @@ public interface GameDAO {
     void clear();
     int createGame(String gameName);
     GameData getGame(int gameID) throws DataAccessException;
+    public boolean doesGameExist(int gameID);
     HashSet<GameData> listGame();
-    void updateGame(String authToken, int gameID, String clientColor) throws DataAccessException;
+    void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException;
 
 }

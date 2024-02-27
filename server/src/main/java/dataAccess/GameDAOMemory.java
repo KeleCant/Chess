@@ -33,6 +33,15 @@ public class GameDAOMemory implements GameDAO {
         return gameDataList.get(gameID);
     }
 
+    @Override
+    public boolean doesGameExist(int gameID) {
+        //check to make sure this game ID exits
+        if (gameDataList.containsKey(gameID)){
+            return true;
+        }
+        return false;
+    }
+
     //listGames: Retrieve all games.
     @Override
     public HashSet<GameData> listGame(){
@@ -43,33 +52,29 @@ public class GameDAOMemory implements GameDAO {
     //It should replace the chess game string corresponding to a given gameID.
     //This is used when players join a game or when a move is made. fixme this does not apply to new moves made
     @Override
-    public void updateGame(String authToken, int gameID, String clientColor) throws DataAccessException {
-        AuthDAO authDAO = new AuthDAOMemory();
-        GameData updateGameData = gameDataList.get(gameID);
+    public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
+        GameData game = gameDataList.get(gameID);
 
-        if (clientColor == "WHITE") {   //add White player
-            //check to see if color is taken
-            if (updateGameData.whiteUsername() != null){
-                throw new DataAccessException("Error: already taken");
-            }
-            gameDataList.put(gameID, new GameData(
-                    gameID,
-                    authDAO.getUsername(authToken),
-                    updateGameData.blackUsername(),
-                    updateGameData.gameName(),
-                    updateGameData.game()));
+        if (clientColor == null){
+            //join as spectator
+            game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+            gameDataList.put(gameID, game);
         }
-        else if (clientColor == "BLACK") {  //add Black player
+        else if (clientColor.contains("WHITE")) {   //add White player
             //check to see if color is taken
-            if (updateGameData.blackUsername() != null){
+            if (game.whiteUsername() != null)
                 throw new DataAccessException("Error: already taken");
-            }
-            gameDataList.put(gameID, new GameData(
-                    gameID,
-                    updateGameData.whiteUsername(),
-                    authDAO.getUsername(authToken),
-                    updateGameData.gameName(),
-                    updateGameData.game()));
+
+            game = new GameData(game.gameID(), authDAO.getUsername(authToken), game.blackUsername(), game.gameName(), game.game());
+            gameDataList.put(gameID, game);
+        }
+        else if (clientColor.contains("BLACK")) {  //add Black player
+            //check to see if color is taken
+            if (game.blackUsername() != null)
+                throw new DataAccessException("Error: already taken");
+
+            game = new GameData(game.gameID(), game.whiteUsername(), authDAO.getUsername(authToken), game.gameName(), game.game());
+            gameDataList.put(gameID, game);
         }
         else {
             throw new DataAccessException("Error: bad request");
