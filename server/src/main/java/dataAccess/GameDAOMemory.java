@@ -60,7 +60,7 @@ public class GameDAOMemory implements GameDAO {
             game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
             gameDataList.put(gameID, game);
         }
-        else if (clientColor.contains("WHITE")) {   //add White player
+        else if (clientColor.equals("WHITE")) {   //add White player
             //check to see if color is taken
             if (game.whiteUsername() != null)
                 throw new DataAccessException("Error: already taken");
@@ -68,7 +68,7 @@ public class GameDAOMemory implements GameDAO {
             game = new GameData(game.gameID(), authDAO.getUsername(authToken), game.blackUsername(), game.gameName(), game.game());
             gameDataList.put(gameID, game);
         }
-        else if (clientColor.contains("BLACK")) {  //add Black player
+        else if (clientColor.equals("BLACK")) {  //add Black player
             //check to see if color is taken
             if (game.blackUsername() != null)
                 throw new DataAccessException("Error: already taken");

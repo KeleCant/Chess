@@ -123,11 +123,18 @@ public class Server {
     private Object joinGameHandler (Request req, Response res){
         try {
             JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);
-            request.setAuthToken(req.headers("authorization"));
+            String authToken = req.headers("authorization");
             GameService gameService = new GameService(authDAO, gameDAO);
-            Object object = gameService.joinGameService(request);
+            Object object = gameService.joinGameService(request, authToken);
             res.status(200);
             return new Gson().toJson(object);
+//            var gson = new Gson();
+//            JoinGameRequest request = (JoinGameRequest)gson.fromJson(req.body(), JoinGameRequest.class);
+//            request.setAuthToken(req.headers("authorization"));
+//            GameService gameService = new GameService(authDAO, gameDAO);
+//            JoinGameResult result = gameService.joinGameService(request, );
+//            res.status(200);
+//            return gson.toJson(result);
         }
         catch (DataAccessException exeption){
             res.status(returnErrorType(exeption.getMessage()));

@@ -36,16 +36,16 @@ public class GameService {
     //Verifies that the specified game exists, and, if a color is specified, adds the caller as the requested color to the game.
     // If no color is specified the user is joined as an observer.
     // This request is idempotent.
-    public static JoinGameResult joinGameService(JoinGameRequest request) throws DataAccessException {
+    public static JoinGameResult joinGameService(JoinGameRequest request, String authToken) throws DataAccessException {
         //check auth data
-        if (!authDAO.getAuth(request.authToken()))
+        if (!authDAO.getAuth(authToken))
             throw new DataAccessException("Error: unauthorized");
         //make sure game exists
         if (!gameDAO.doesGameExist(request.gameID()))
             throw new DataAccessException("Error: bad request");
 
         //intert user
-        gameDAO.updateGame(request.authToken(),request.gameID(),request.clientColor(), authDAO);
+        gameDAO.updateGame(authToken,request.gameID(),request.playerColor(), authDAO);
         return new JoinGameResult();
     }
 }
