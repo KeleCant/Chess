@@ -23,15 +23,15 @@ public class GameDAOMemory implements GameDAO {
         return gameID;
     }
 
-    //getGame: Retrieve a specified game with the given game ID.
-    @Override
-    public GameData getGame(int gameID) throws DataAccessException{
-        //check to make sure this game ID exits
-        if (!gameDataList.containsKey(gameID)){
-            throw new DataAccessException("Error: bad request");
-        }
-        return gameDataList.get(gameID);
-    }
+//    //getGame: Retrieve a specified game with the given game ID.
+//    @Override
+//    public GameData getGame(int gameID) throws DataAccessException{
+//        //check to make sure this game ID exits
+//        if (!gameDataList.containsKey(gameID)){
+//            throw new DataAccessException("Error: bad request");
+//        }
+//        return gameDataList.get(gameID);
+//    }
 
     @Override
     public boolean doesGameExist(int gameID) {
