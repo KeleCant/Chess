@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SQLUserDAO implements UserDAO {
 
@@ -53,13 +54,25 @@ public class SQLUserDAO implements UserDAO {
     @Override
     //insert new user into database
     public UserData createUser(String username, String password, String email) throws DataAccessException {
-        try (Connection con = DatabaseManager.getConnection(); var statement = con.prepareStatement("INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)")) {
+        try (Connection con = DatabaseManager.getConnection()) {
+            //throw exception if username already exists
+            try(var preparedStatement = con.prepareStatement("SELECT * FROM userDataTable WHERE username=?")){
+                preparedStatement.setString(1, username);
+                try (var resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        throw new DataAccessException("Error: already taken");
+                    }
+                }
+            }
+            //adds user
+            try(var statement = con.prepareStatement("INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)")){
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 String newPassword = encoder.encode(password);
                 statement.setString(1, username);
                 statement.setString(2, newPassword);
                 statement.setString(3, email);
                 statement.executeUpdate();
+            }
         } catch (SQLException exception) {throw new RuntimeException(exception);}
         return new UserData(username, password, email);
     }
@@ -69,30 +82,29 @@ public class SQLUserDAO implements UserDAO {
     Read data
      */
     @Override public void checkUsername(String username) throws DataAccessException {
-        try (Connection con = DatabaseManager.getConnection()) {
-            try (var statement = con.prepareStatement("SELECT * FROM user WHERE username = ?")) {
-                statement.setString(1, username);
-                var resultSet = statement.executeQuery();
-                if(resultSet.next()){
-                    throw new DataAccessException("Error: already taken");
-                }
+        try (Connection con = DatabaseManager.getConnection(); var statement = con.prepareStatement("SELECT * FROM userDataTable WHERE username = ?")) {
+            statement.setString(1, username);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()){
+                throw new DataAccessException("Error: already taken");
             }
         } catch (SQLException exception) {throw new RuntimeException(exception);}
     }
     @Override public void checkPassword(String username, String password) throws DataAccessException {
-
+        try (Connection con = DatabaseManager.getConnection(); var statement = con.prepareStatement("SELECT * FROM userDataTable WHERE username = ?")) {
+            statement.setString(1, username);
+            var resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                var realPassword = resultSet.getString("password");
+                if (!Objects.equals(realPassword, password))
+                    throw new DataAccessException("Error: unauthorized");
+            } else {
+                //if no username was found
+                throw new DataAccessException("Error: unauthorized");
+            }
+        } catch (SQLException exception) { throw new RuntimeException(exception); }
     }
     @Override public HashMap<String, UserData> getMap() {
-        var map = new HashMap<String, UserData>();
-        try (var con = DatabaseManager.getConnection()) {
-            try (var ps = con.prepareStatement("SELECT username, password, email FROM user")) {
-                try (var rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        //map.put(rs.getString("username"), readUser(rs));
-                    }
-                }
-            }
-        } catch (Exception exception) { throw new RuntimeException(exception); }
-        return map;
+        return null;
     }
 }
