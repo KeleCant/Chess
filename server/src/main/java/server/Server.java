@@ -24,7 +24,6 @@ public class Server {
     private AuthDAO authDAO;
     private GameDAO gameDAO;
     private UserDAO userDAO;
-
     public Server() {
         try {
             this.authDAO = new SQLAuthDAO();

@@ -33,7 +33,7 @@ public class ServiceTest {
     private final GameDAOMemory gameDAO = new GameDAOMemory();
     private final UserDAOMemory userDAO = new UserDAOMemory();
     //start Services
-    ClearService clearService = new ClearService(authDAO, gameDAO, userDAO);
+    ClearService clearService = new ClearService();
     GameService gameService = new GameService(authDAO, gameDAO);
     UserService userService = new UserService(authDAO, userDAO);
 
