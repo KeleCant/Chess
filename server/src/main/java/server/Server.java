@@ -12,23 +12,23 @@ import spark.Spark;
 
 public class Server {
     //for local Storage
-    private final AuthDAO authDAO = new AuthDAOMemory();
-    private final GameDAO gameDAO = new GameDAOMemory();
-    private final UserDAO userDAO = new UserDAOMemory();
+//    private final AuthDAO authDAO = new AuthDAOMemory();
+//    private final GameDAO gameDAO = new GameDAOMemory();
+//    private final UserDAO userDAO = new UserDAOMemory();
 
     //for sequal storage
-//    private AuthDAO authDAO;
-//    private GameDAO gameDAO;
-//    private UserDAO userDAO;
-//    public Server() {
-//        try {
-//            this.authDAO = new SQLAuthDAO();
-//            this.gameDAO = new SQLGameDAO();
-//            this.userDAO = new SQLUserDAO();
-//        } catch (Exception ex) {
-//            System.out.printf("Unable to start server: %s%n", ex.getMessage());
-//        }
-//    }
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
+    private UserDAO userDAO;
+    public Server() {
+        try {
+            this.authDAO = new SQLAuthDAO();
+            this.gameDAO = new SQLGameDAO();
+            this.userDAO = new SQLUserDAO();
+        } catch (Exception ex) {
+            System.out.printf("Unable to start server: %s%n", ex.getMessage());
+        }
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

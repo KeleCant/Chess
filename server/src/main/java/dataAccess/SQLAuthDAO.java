@@ -38,32 +38,27 @@ public class SQLAuthDAO implements AuthDAO {
      */
     @Override
     public void clear() {
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("TRUNCATE authDataTable")) {
-                preparedStatement.executeUpdate();
-            }
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("TRUNCATE authDataTable")) {
+            preparedStatement.executeUpdate();
         } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
     }
     @Override
     public String createAuth(String username) throws DataAccessException {
         String newAuth = UUID.randomUUID().toString();
-        try (var con = DatabaseManager.getConnection()) {
-            var statement="INSERT INTO auth (username, authToken) VALUES (?, ?)";
-            try (var preparedStatement = con.prepareStatement(statement)) {
-                preparedStatement.setString(1, username);   //value ?
-                preparedStatement.setString(2, newAuth);    //value ?
-                preparedStatement.executeUpdate();
-            }
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?)")) {
+            preparedStatement.setString(1, username);   //value ?
+            preparedStatement.setString(2, newAuth);    //value ?
+            preparedStatement.executeUpdate();
         } catch (SQLException exception) {throw new RuntimeException(exception);}
         return newAuth;
     }
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("DELETE FROM authDataTable WHERE authToken=?")) {
-                preparedStatement.setString(1, authToken);  //value ?
-                preparedStatement.executeUpdate();
-            }
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("DELETE FROM authDataTable WHERE authToken=?")) {
+            preparedStatement.setString(1, authToken);  //value ?
+            int executed = preparedStatement.executeUpdate();
+            if (executed == 0)
+                throw new DataAccessException("Error: unauthorized");
         } catch (SQLException exception) {throw new RuntimeException(exception);}
     }
 
@@ -72,13 +67,11 @@ public class SQLAuthDAO implements AuthDAO {
      */
     @Override
     public boolean getAuth(String authToken) {
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
-                preparedStatement.setString(1, authToken);
-                try (var resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                       return true;
-                    }
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
+            preparedStatement.setString(1, authToken);
+            try (var resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true;
                 }
             }
         } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
@@ -86,15 +79,13 @@ public class SQLAuthDAO implements AuthDAO {
     }
     @Override
     public String getUsername(String authToken) {
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
-                preparedStatement.setString(1, authToken);
-                try (var resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return resultSet.getString("username");
-                    } else {
-                        throw new DataAccessException("Error: unauthorized");
-                    }
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
+            preparedStatement.setString(1, authToken);
+            try (var resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                } else {
+                    throw new DataAccessException("Error: unauthorized");
                 }
             }
         } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
