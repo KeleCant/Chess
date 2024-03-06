@@ -22,9 +22,11 @@ public class Server {
     private UserDAO userDAO;
     public Server() {
         try {
+            //System.out.printf("Creating SQLs");
             this.authDAO = new SQLAuthDAO();
             this.gameDAO = new SQLGameDAO();
             this.userDAO = new SQLUserDAO();
+            //System.out.printf("SQLs Created");
         } catch (Exception ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }

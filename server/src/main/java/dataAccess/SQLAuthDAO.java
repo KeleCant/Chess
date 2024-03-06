@@ -45,7 +45,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public String createAuth(String username) throws DataAccessException {
         String newAuth = UUID.randomUUID().toString();
-        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("INSERT INTO auth (username, authToken) VALUES (?, ?)")) {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("INSERT INTO authDataTable (username, authToken) VALUES (?, ?)")) {
             preparedStatement.setString(1, username);   //value ?
             preparedStatement.setString(2, newAuth);    //value ?
             preparedStatement.executeUpdate();
@@ -67,7 +67,7 @@ public class SQLAuthDAO implements AuthDAO {
      */
     @Override
     public boolean getAuth(String authToken) {
-        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE authToken=?")) {
             preparedStatement.setString(1, authToken);
             try (var resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -79,7 +79,7 @@ public class SQLAuthDAO implements AuthDAO {
     }
     @Override
     public String getUsername(String authToken) {
-        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM auth WHERE authToken=?")) {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE authToken=?")) {
             preparedStatement.setString(1, authToken);
             try (var resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
