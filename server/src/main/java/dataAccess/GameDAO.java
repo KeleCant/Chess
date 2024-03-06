@@ -1,7 +1,7 @@
 package dataAccess;
 
-import chess.*;
-import model.GameData;
+import model.*;
+
 import java.util.HashSet;
 
 public interface GameDAO {

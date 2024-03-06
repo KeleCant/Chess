@@ -13,7 +13,7 @@ public class GameService {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
-
+ 
     //Gives a list of all games.
     public static ListGamesResult listGamesService(ListGamesRequest request) throws DataAccessException {
         //verify authToken

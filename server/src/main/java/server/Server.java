@@ -1,7 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import dataAccess.*;
+import requests.*;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -9,30 +10,25 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
-import java.util.Map;
-import requests.*;
-import results.*;
-import dataAccess.*;
-
 public class Server {
     //for local Storage
-//    private final AuthDAO authDAO = new AuthDAOMemory();
-//    private final GameDAO gameDAO = new GameDAOMemory();
-//    private final UserDAO userDAO = new UserDAOMemory();
+    private final AuthDAO authDAO = new AuthDAOMemory();
+    private final GameDAO gameDAO = new GameDAOMemory();
+    private final UserDAO userDAO = new UserDAOMemory();
 
     //for sequal storage
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
-    private UserDAO userDAO;
-    public Server() {
-        try {
-            this.authDAO = new SQLAuthDAO();
-            this.gameDAO = new SQLGameDAO();
-            this.userDAO = new SQLUserDAO();
-        } catch (Exception ex) {
-            System.out.printf("Unable to start server: %s%n", ex.getMessage());
-        }
-    }
+//    private AuthDAO authDAO;
+//    private GameDAO gameDAO;
+//    private UserDAO userDAO;
+//    public Server() {
+//        try {
+//            this.authDAO = new SQLAuthDAO();
+//            this.gameDAO = new SQLGameDAO();
+//            this.userDAO = new SQLUserDAO();
+//        } catch (Exception ex) {
+//            System.out.printf("Unable to start server: %s%n", ex.getMessage());
+//        }
+//    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

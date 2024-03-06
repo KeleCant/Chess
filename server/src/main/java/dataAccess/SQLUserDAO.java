@@ -74,7 +74,31 @@ public class SQLUserDAO implements UserDAO {
     /*
     Read data
      */
-    @Override public void checkUsername(String username) throws DataAccessException {}
-    @Override public void checkPassword(String username, String password) throws DataAccessException {}
-    @Override public HashMap<String, UserData> getMap() {return null;}
+    @Override public void checkUsername(String username) throws DataAccessException {
+        try (Connection con = DatabaseManager.getConnection()) {
+            try (var statement = con.prepareStatement("SELECT * FROM user WHERE username = ?")) {
+                statement.setString(1, username);
+                var resultSet = statement.executeQuery();
+                if(resultSet.next()){
+                    throw new DataAccessException("Error: already taken");
+                }
+            }
+        } catch (SQLException exception) {throw new RuntimeException(exception);}
+    }
+    @Override public void checkPassword(String username, String password) throws DataAccessException {
+
+    }
+    @Override public HashMap<String, UserData> getMap() {
+        var map = new HashMap<String, UserData>();
+        try (var con = DatabaseManager.getConnection()) {
+            try (var ps = con.prepareStatement("SELECT username, password, email FROM user")) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        //map.put(rs.getString("username"), readUser(rs));
+                    }
+                }
+            }
+        } catch (Exception exception) { throw new RuntimeException(exception); }
+        return map;
+    }
 }

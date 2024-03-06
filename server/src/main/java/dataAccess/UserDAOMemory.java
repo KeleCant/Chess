@@ -1,7 +1,6 @@
 package dataAccess;
 
-import model.AuthData;
-import model.UserData;
+import model.*;
 import java.util.HashMap;
 import java.util.Objects;
 
