@@ -5,9 +5,6 @@ import model.GameData;
 import java.sql.SQLException;
 import java.util.HashSet;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
-
 public class SQLGameDAO implements GameDAO {
 
     /*
@@ -18,18 +15,8 @@ public class SQLGameDAO implements GameDAO {
         //configure database
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
-
-    private final String[] createStatements = {
-            """
+            String[] createStatements = {
+                    """
             CREATE TABLE IF NOT EXISTS gameDataTable (
               `gameid` int NOT NULL AUTO_INCREMENT,
               `whiteusername` varchar(256),
@@ -39,7 +26,16 @@ public class SQLGameDAO implements GameDAO {
               PRIMARY KEY (`gameid`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
-    };
+            };
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+        }
+    }
 
     /*
     Input Data

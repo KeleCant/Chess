@@ -1,12 +1,7 @@
 package dataAccess;
 
-import model.AuthData;
-
 import java.sql.SQLException;
 import java.util.UUID;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLAuthDAO implements AuthDAO {
 
@@ -18,6 +13,16 @@ public class SQLAuthDAO implements AuthDAO {
         //configure database
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
+            String[] createStatements = {
+                    """
+            CREATE TABLE IF NOT EXISTS  authDataTable (
+                `authtoken` varchar(256) NOT NULL,
+                `username` varchar(256) NOT NULL,
+                PRIMARY KEY (`authtoken`),
+                INDEX(username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+            };
             for (var statement : createStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
@@ -27,17 +32,6 @@ public class SQLAuthDAO implements AuthDAO {
             throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
-
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  authDataTable (
-                `authtoken` varchar(256) NOT NULL,
-                `username` varchar(256) NOT NULL,
-                PRIMARY KEY (`authtoken`),
-                INDEX(username)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-            """
-    };
 
     /*
     Input Data
@@ -60,7 +54,7 @@ public class SQLAuthDAO implements AuthDAO {
                 preparedStatement.setString(2, newAuth);    //value ?
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException exeption) {throw new RuntimeException(exeption);}
+        } catch (SQLException exception) {throw new RuntimeException(exception);}
         return newAuth;
     }
     @Override

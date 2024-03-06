@@ -1,13 +1,11 @@
 package dataAccess;
 
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.google.gson.Gson;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLUserDAO implements UserDAO {
 
@@ -19,18 +17,8 @@ public class SQLUserDAO implements UserDAO {
         //Configuration
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
-
-    private final String[] createStatements = {
-            """
+            String[] createStatements = {
+                    """
             CREATE TABLE IF NOT EXISTS  userDataTable (
                 `username` varchar(256) NOT NULL,
                 `password` varchar(256) NOT NULL,
@@ -40,7 +28,16 @@ public class SQLUserDAO implements UserDAO {
                 INDEX(email)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
-    };
+            };
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+        }
+    }
 
     /*
     Input data
@@ -58,9 +55,19 @@ public class SQLUserDAO implements UserDAO {
         }
     }
     @Override
-    //incert new user into database
+    //insert new user into database
     public UserData createUser(String username, String password, String email) throws DataAccessException {
-        return null;
+        try (Connection con = DatabaseManager.getConnection()) {
+            try (var statement = con.prepareStatement("INSERT INTO user (username, password, email) VALUES (?, ?, ?)")) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                String newPassword = encoder.encode(password);
+                statement.setString(1, username);
+                statement.setString(2, newPassword);
+                statement.setString(3, email);
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {throw new RuntimeException(exception);}
+        return new UserData(username, password, email);
     }
 
 
