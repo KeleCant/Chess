@@ -7,8 +7,6 @@ import model.GameData;
 import java.sql.SQLException;
 import java.util.HashSet;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
 public class SQLGameDAO implements GameDAO {
 
     /*
@@ -55,26 +53,27 @@ public class SQLGameDAO implements GameDAO {
     //creates and imports new game into database
     @Override
     public int createGame(String gameName) {
-        int gameID;
-        ChessGame chessGame = new ChessGame();
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
-                preparedStatement.setString(1, gameName);
-                preparedStatement.setString(2, null);
-                preparedStatement.setString(3, null);
-                preparedStatement.setObject(4, new Gson().toJson(chessGame));
-                preparedStatement.executeUpdate();
-                try (var rs = preparedStatement.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        // Retrieve the auto-increment key
-                        gameID = rs.getInt(1);
-                    } else {
-                        throw new SQLException("No auto-generated keys were returned.");
-                    }
-                }
-            }
-        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
-        return gameID;
+//        int gameID;
+//        ChessGame chessGame = new ChessGame();
+//        try (var con = DatabaseManager.getConnection()) {
+//            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
+//                preparedStatement.setString(1, gameName);
+//                preparedStatement.setString(2, null);
+//                preparedStatement.setString(3, null);
+//                preparedStatement.setObject(4, new Gson().toJson(chessGame));
+//                preparedStatement.executeUpdate();
+//                try (var rs = preparedStatement.getGeneratedKeys()) {
+//                    if (rs.next()) {
+//                        // Retrieve the auto-increment key
+//                        gameID = rs.getInt(1);
+//                    } else {
+//                        throw new SQLException("No auto-generated keys were returned.");
+//                    }
+//                }
+//            }
+//        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
+//        return gameID;
+        return 0;
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {

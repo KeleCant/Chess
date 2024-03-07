@@ -64,7 +64,7 @@ public class SQLUserDAO implements UserDAO {
                 }
             }
             //adds user
-            try(var statement = con.prepareStatement("INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)")){
+            try (var statement = con.prepareStatement("INSERT INTO userDataTable (username, password, email) VALUES (?, ?, ?)")){
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 String newPassword = encoder.encode(password);
                 statement.setString(1, username);
