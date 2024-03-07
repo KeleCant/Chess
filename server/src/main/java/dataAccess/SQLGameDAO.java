@@ -78,26 +78,26 @@ public class SQLGameDAO implements GameDAO {
     }
     //creates and imports new game into database
     @Override
-    public int createGame(String gameName) {
-        int gameID;
-        ChessGame chessGame = new ChessGame();
-        try (var con = DatabaseManager.getConnection()) {
-            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
-                preparedStatement.setString(1, gameName);
-                preparedStatement.setString(2, null);
-                preparedStatement.setString(3, null);
-                preparedStatement.setObject(4, new Gson().toJson(chessGame));
-                preparedStatement.executeUpdate();
-                try (var rs = preparedStatement.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        gameID = rs.getInt(1);
-                    } else {
-                        throw new SQLException("No auto-generated keys were returned.");
-                    }
-                }
-            }
-        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
-        return gameID;
+    public int createGame(String gameName) throws DataAccessException {
+//        int gameID;
+//        ChessGame chessGame = new ChessGame();
+//        try (var con = DatabaseManager.getConnection()) {
+//            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
+//                preparedStatement.setString(1, gameName);
+//                preparedStatement.setString(2, null);
+//                preparedStatement.setString(3, null);
+//                preparedStatement.setObject(4, new Gson().toJson(chessGame));
+//                preparedStatement.executeUpdate();
+//                try (var rs = preparedStatement.getGeneratedKeys()) {
+//                    if (rs.next()) {
+//                        gameID = rs.getInt(1);
+//                    } else {
+//                        throw new SQLException("No auto-generated keys were returned.");
+//                    }
+//                }
+//            }
+//        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
+//        return gameID;
 
 
 //            try (var conn = DatabaseManager.getConnection(); var statement = conn.prepareStatement("INSERT INTO game (gameID,whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)")) {
@@ -114,13 +114,10 @@ public class SQLGameDAO implements GameDAO {
 
 
 
-//        var gson = new Gson();
-//
-//        var game = gson.toJson(gameData.getGame());
-//
-//        var statement = "INSERT INTO game (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)";
-//        int id = executeUpdate(statement, null, null, gameName, game);
-//        return id;
+        var gson = new Gson();
+        ChessGame thisChessGame = new ChessGame();
+        var gsonGame = gson.toJson(thisChessGame);
+        return executeUpdate("INSERT INTO game (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)", null, null, gameName, gsonGame);
 
 
         //return 0;
