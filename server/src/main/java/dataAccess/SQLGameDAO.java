@@ -23,13 +23,15 @@ public class SQLGameDAO implements GameDAO {
             String[] createStatements = {
                     """
             CREATE TABLE IF NOT EXISTS gameDataTable (
-              `gameid` int NOT NULL AUTO_INCREMENT,
-              `whiteusername` varchar(256),
-              `blackusername` varchar(256),
-              `gamename` varchar(256),
-              `chessgame` JSON NOT NULL,
-              PRIMARY KEY (`gameid`),
-              INDEX(gamename)
+            `gameID` int NOT NULL AUTO_INCREMENT,
+            `whiteUsername` varchar(256),
+            `blackUsername` varchar(256),
+            `gameName` varchar(256),
+            `chessGame` json DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            INDEX(whiteUsername),
+            INDEX(blackUsername),
+            INDEX(gameName)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
             };
@@ -80,7 +82,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public int createGame(String gameName) throws DataAccessException {
         var gson = new Gson();
-        return executeUpdate("INSERT INTO gameDataTable (whiteusername, blackusername, gamename, chessgame) VALUES (?, ?, ?, ?)", null, null, gameName, gson.toJson(new ChessGame()));
+        return executeUpdate("INSERT INTO gameDataTable (whiteUsername, blackUsername, gameName, chessGame) VALUES (?, ?, ?, ?)", null, null, gameName, gson.toJson(new ChessGame()));
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
@@ -91,7 +93,7 @@ public class SQLGameDAO implements GameDAO {
             preparedStatement.setInt(1, gameID);
             try (var rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
-                    game = new GameData(rs.getInt("gameid"), rs.getString("whiteusername"), rs.getString("blackusername"), rs.getString("gameName"), new Gson().fromJson(rs.getString("chessgame"), ChessGame.class));
+                    game = new GameData(rs.getInt("gameID"), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), new Gson().fromJson(rs.getString("chessGame"), ChessGame.class));
                 } else {
                     throw new DataAccessException("Error Invalid ID");
                 }
@@ -125,7 +127,7 @@ public class SQLGameDAO implements GameDAO {
     }
     @Override
     public void updateGameData(int gameID, GameData game) throws DataAccessException {
-        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("UPDATE gameDataTable SET whiteusername =?, blackusername = ?, chessgame =? WHERE gameid =?")) {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("UPDATE gameDataTable SET whiteUsername =?, blackUsername = ?, chessGame =? WHERE gameID =?")) {
             preparedStatement.setObject(1, game.whiteUsername());
             preparedStatement.setObject(2, game.blackUsername());
             preparedStatement.setObject(3, game.game());
@@ -159,7 +161,7 @@ public class SQLGameDAO implements GameDAO {
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM gameDataTable")) {
             try (var resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    gameList.add(new GameData(resultSet.getInt("gameid"), resultSet.getString("whiteusername"), resultSet.getString("blackusername"), resultSet.getString("gamename"), new Gson().fromJson(resultSet.getString("chessgame"), ChessGame.class)));
+                    gameList.add(new GameData(resultSet.getInt("gameID"), resultSet.getString("whiteUsername"), resultSet.getString("blackUsername"), resultSet.getString("gameName"), new Gson().fromJson(resultSet.getString("chessGame"), ChessGame.class)));
                 }
                 return gameList;
             }
