@@ -130,7 +130,8 @@ public class SQLGameDAO implements GameDAO {
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("UPDATE gameDataTable SET whiteUsername =?, blackUsername = ?, chessGame =? WHERE gameID =?")) {
             preparedStatement.setObject(1, game.whiteUsername());
             preparedStatement.setObject(2, game.blackUsername());
-            preparedStatement.setObject(3, game.game());
+            var gson = new Gson();
+            preparedStatement.setObject(3, gson.toJson(game.game()));
             preparedStatement.setInt(4, gameID);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected == 0) {
