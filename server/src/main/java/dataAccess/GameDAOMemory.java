@@ -88,4 +88,8 @@ public class GameDAOMemory implements GameDAO {
     public int hashCode() {
         return Objects.hash(gameDataList);
     }
+
+    public void updateGameData(int gameID, GameData game) throws DataAccessException{
+
+    }
 }

@@ -85,59 +85,56 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
 
-//        GameData game = gameDataList.get(gameID);
-//
-//        if (clientColor == null){
-//            //join as spectator
-//            game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
-//            gameDataList.put(gameID, game);
-//        }
-//        else if (clientColor.equals("WHITE")) {   //add White player
-//            //check to see if color is taken
-//            if (game.whiteUsername() != null)
-//                throw new DataAccessException("Error: already taken");
-//
-//            game = new GameData(game.gameID(), authDAO.getUsername(authToken), game.blackUsername(), game.gameName(), game.game());
-//            gameDataList.put(gameID, game);
-//        }
-//        else if (clientColor.equals("BLACK")) {  //add Black player
-//            //check to see if color is taken
-//            if (game.blackUsername() != null)
-//                throw new DataAccessException("Error: already taken");
-//
-//            game = new GameData(game.gameID(), game.whiteUsername(), authDAO.getUsername(authToken), game.gameName(), game.game());
-//            gameDataList.put(gameID, game);
-//        }
-//        else {
-//            throw new DataAccessException("Error: bad request");
-//        }
+        //get the game info
+        GameData game;
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM gameDataTable WHERE gameID=?")) {
+            preparedStatement.setInt(1, gameID);
+            try (var rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    game = new GameData(rs.getInt("gameid"), rs.getString("whiteusername"), rs.getString("blackusername"), rs.getString("gameName"), new Gson().fromJson(rs.getString("chessgame"), ChessGame.class));
+                } else {
+                    throw new DataAccessException("Error Invalid ID");
+                }
+            }
+        } catch (SQLException exception) { throw new RuntimeException(exception); }
 
+        if (clientColor == null){
+            //join as spectator
+            game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+            updateGameData(gameID, game);
+        }
+        else if (clientColor.equals("WHITE")) {   //add White player
+            //check to see if color is taken
+            if (game.whiteUsername() != null)
+                throw new DataAccessException("Error: already taken");
 
+            game = new GameData(game.gameID(), authDAO.getUsername(authToken), game.blackUsername(), game.gameName(), game.game());
+            updateGameData(gameID, game);
+        }
+        else if (clientColor.equals("BLACK")) {  //add Black player
+            //check to see if color is taken
+            if (game.blackUsername() != null)
+                throw new DataAccessException("Error: already taken");
 
-
-//        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE authToken=?")) {
-//            preparedStatement.setString(1, authToken);
-//            try (var resultSet = preparedStatement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    return true;
-//                }
-//            }
-//        } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
-//        return false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            game = new GameData(game.gameID(), game.whiteUsername(), authDAO.getUsername(authToken), game.gameName(), game.game());
+            updateGameData(gameID, game);
+        }
+        else {
+            throw new DataAccessException("Error: bad request");
+        }
+    }
+    @Override
+    public void updateGameData(int gameID, GameData game) throws DataAccessException {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("UPDATE gameDataTable SET whiteusername =?, blackusername = ?, chessgame =? WHERE gameid =?")) {
+            preparedStatement.setObject(1, game.whiteUsername());
+            preparedStatement.setObject(2, game.blackUsername());
+            preparedStatement.setObject(3, game.game());
+            preparedStatement.setInt(4, gameID);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DataAccessException("No change made");
+            }
+        } catch (SQLException exception) { throw new RuntimeException(exception); }
     }
 
     /*
