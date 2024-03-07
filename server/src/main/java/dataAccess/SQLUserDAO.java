@@ -6,7 +6,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class SQLUserDAO implements UserDAO {
 
@@ -95,8 +94,9 @@ public class SQLUserDAO implements UserDAO {
             statement.setString(1, username);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 var realPassword = resultSet.getString("password");
-                if (!Objects.equals(realPassword, password))
+                if (!encoder.matches(password, realPassword))    //fixme this will never work because password is encoded
                     throw new DataAccessException("Error: unauthorized");
             } else {
                 //if no username was found
