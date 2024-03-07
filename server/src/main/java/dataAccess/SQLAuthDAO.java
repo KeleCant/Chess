@@ -90,4 +90,14 @@ public class SQLAuthDAO implements AuthDAO {
             }
         } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "SQLAuthDAO{}";
+    }
 }
