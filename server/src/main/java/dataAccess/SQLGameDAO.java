@@ -79,48 +79,8 @@ public class SQLGameDAO implements GameDAO {
     //creates and imports new game into database
     @Override
     public int createGame(String gameName) throws DataAccessException {
-//        int gameID;
-//        ChessGame chessGame = new ChessGame();
-//        try (var con = DatabaseManager.getConnection()) {
-//            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
-//                preparedStatement.setString(1, gameName);
-//                preparedStatement.setString(2, null);
-//                preparedStatement.setString(3, null);
-//                preparedStatement.setObject(4, new Gson().toJson(chessGame));
-//                preparedStatement.executeUpdate();
-//                try (var rs = preparedStatement.getGeneratedKeys()) {
-//                    if (rs.next()) {
-//                        gameID = rs.getInt(1);
-//                    } else {
-//                        throw new SQLException("No auto-generated keys were returned.");
-//                    }
-//                }
-//            }
-//        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
-//        return gameID;
-
-
-//            try (var conn = DatabaseManager.getConnection(); var statement = conn.prepareStatement("INSERT INTO game (gameID,whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)")) {
-//                    String json = new Gson().toJson(game.game());
-//                    statement.setString(1, game.gameID().toString());
-//                    statement.setString(2, game.whiteUsername());
-//                    statement.setString(3, game.blackUsername());
-//                    statement.setString(4, game.gameName());
-//                    statement.setString(5, json);
-//                    statement.executeUpdate();
-//            } catch (SQLException e) {
-//                throw new DataAccessException(e.getMessage());
-//            }
-
-
-
         var gson = new Gson();
-        ChessGame thisChessGame = new ChessGame();
-        var gsonGame = gson.toJson(thisChessGame);
-        return executeUpdate("INSERT INTO game (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)", null, null, gameName, gsonGame);
-
-
-        //return 0;
+        return executeUpdate("INSERT INTO gameDataTable (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)", null, null, gameName, gson.toJson(new ChessGame()));
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
@@ -152,6 +112,32 @@ public class SQLGameDAO implements GameDAO {
 //            throw new DataAccessException("Error: bad request");
 //        }
 
+
+
+
+//        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE authToken=?")) {
+//            preparedStatement.setString(1, authToken);
+//            try (var resultSet = preparedStatement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    return true;
+//                }
+//            }
+//        } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
+//        return false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     /*
@@ -159,7 +145,7 @@ public class SQLGameDAO implements GameDAO {
      */
     @Override
     public boolean doesGameExist(int gameID) {
-        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM game WHERE gameID=?")) {
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM gameDataTable WHERE gameID=?")) {
             preparedStatement.setInt(1, gameID);
             try (var rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
