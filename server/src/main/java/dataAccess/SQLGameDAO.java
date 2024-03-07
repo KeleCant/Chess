@@ -80,7 +80,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public int createGame(String gameName) throws DataAccessException {
         var gson = new Gson();
-        return executeUpdate("INSERT INTO gameDataTable (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)", null, null, gameName, gson.toJson(new ChessGame()));
+        return executeUpdate("INSERT INTO gameDataTable (whiteusername, blackusername, gamename, chessgame) VALUES (?, ?, ?, ?)", null, null, gameName, gson.toJson(new ChessGame()));
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
