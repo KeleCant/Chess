@@ -28,7 +28,7 @@ public class SQLGameDAO implements GameDAO {
             `blackUsername` varchar(256),
             `gameName` varchar(256),
             `chessGame` json DEFAULT NULL,
-            PRIMARY KEY (`id`),
+            PRIMARY KEY (`gameID`),
             INDEX(whiteUsername),
             INDEX(blackUsername),
             INDEX(gameName)
