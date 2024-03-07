@@ -7,6 +7,9 @@ import model.GameData;
 import java.sql.SQLException;
 import java.util.HashSet;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
+
 public class SQLGameDAO implements GameDAO {
 
     /*
@@ -40,6 +43,29 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+                ps.executeUpdate();
+
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
+    }
+
     /*
     Input Data
      */
@@ -53,29 +79,51 @@ public class SQLGameDAO implements GameDAO {
     //creates and imports new game into database
     @Override
     public int createGame(String gameName) {
-//        if (game.gameID() < 0 || game.gameName() == null || game.game() == null)
-//            throw new DataAccessException("Invalid game data");
-//        int gameID;
-//        ChessGame chessGame = new ChessGame();
-//        try (var con = DatabaseManager.getConnection()) {
-//            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)")) {
-//                preparedStatement.setString(1, gameName);
-//                preparedStatement.setString(2, null);
-//                preparedStatement.setString(3, null);
-//                preparedStatement.setObject(4, new Gson().toJson(chessGame));
-//                preparedStatement.executeUpdate();
-//                try (var rs = preparedStatement.getGeneratedKeys()) {
-//                    if (rs.next()) {
-//                        // Retrieve the auto-increment key
-//                        gameID = rs.getInt(1);
-//                    } else {
-//                        throw new SQLException("No auto-generated keys were returned.");
-//                    }
-//                }
+        int gameID;
+        ChessGame chessGame = new ChessGame();
+        try (var con = DatabaseManager.getConnection()) {
+            try (var preparedStatement = con.prepareStatement("INSERT INTO game (gameName, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, gameName);
+                preparedStatement.setString(2, null);
+                preparedStatement.setString(3, null);
+                preparedStatement.setObject(4, new Gson().toJson(chessGame));
+                preparedStatement.executeUpdate();
+                try (var rs = preparedStatement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        gameID = rs.getInt(1);
+                    } else {
+                        throw new SQLException("No auto-generated keys were returned.");
+                    }
+                }
+            }
+        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
+        return gameID;
+
+
+//            try (var conn = DatabaseManager.getConnection(); var statement = conn.prepareStatement("INSERT INTO game (gameID,whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)")) {
+//                    String json = new Gson().toJson(game.game());
+//                    statement.setString(1, game.gameID().toString());
+//                    statement.setString(2, game.whiteUsername());
+//                    statement.setString(3, game.blackUsername());
+//                    statement.setString(4, game.gameName());
+//                    statement.setString(5, json);
+//                    statement.executeUpdate();
+//            } catch (SQLException e) {
+//                throw new DataAccessException(e.getMessage());
 //            }
-//        } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
-//        return gameID;
-        return 0;
+
+
+
+//        var gson = new Gson();
+//
+//        var game = gson.toJson(gameData.getGame());
+//
+//        var statement = "INSERT INTO game (whiteusername, blackusername, gamename, game) VALUES (?, ?, ?, ?)";
+//        int id = executeUpdate(statement, null, null, gameName, game);
+//        return id;
+
+
+        //return 0;
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
@@ -127,13 +175,13 @@ public class SQLGameDAO implements GameDAO {
     }
     @Override
     public HashSet<GameData> listGame() {
-        HashSet<GameData> games = new HashSet<>();
+        HashSet<GameData> gameList = new HashSet<>();
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM gameDataTable")) {
             try (var resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    games.add(new GameData(resultSet.getInt("gameid"), resultSet.getString("whiteusername"), resultSet.getString("blackusername"), resultSet.getString("gamename"), new Gson().fromJson(resultSet.getString("chessgame"), ChessGame.class)));
+                    gameList.add(new GameData(resultSet.getInt("gameid"), resultSet.getString("whiteusername"), resultSet.getString("blackusername"), resultSet.getString("gamename"), new Gson().fromJson(resultSet.getString("chessgame"), ChessGame.class)));
                 }
-                return games;
+                return gameList;
             }
         } catch (DataAccessException | SQLException exception) { throw new RuntimeException(exception); }
     }
