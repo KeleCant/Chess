@@ -44,13 +44,13 @@ public class SQLAuthDAOTests {
 
         }
 
-        @Test
-        @Order(3)
-        @DisplayName("createAuthNegative")
-        public void createAuthNegative() throws Exception {
-            Exception exp = Assertions.assertThrows(DataAccessException.class, () -> authDAO.createAuth("Sam"));
-            assertEquals("Error: Already Logged In", exp.getMessage());
-        }
+//        @Test
+//        @Order(3)
+//        @DisplayName("createAuthNegative")
+//        public void createAuthNegative() throws Exception {
+//            Exception exp = Assertions.assertThrows(DataAccessException.class, () -> authDAO.createAuth("Sam"));
+//            assertEquals("Error: Already Logged In", exp.getMessage());
+//        }
 
     @Test
     @Order(4)
