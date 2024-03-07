@@ -23,7 +23,7 @@ public class SQLGameDAO implements GameDAO {
             String[] createStatements = {
                     """
             CREATE TABLE IF NOT EXISTS gameDataTable (
-              `gameid` int NOT NULL,
+              `gameid` int NOT NULL AUTO_INCREMENT,
               `whiteusername` varchar(256),
               `blackusername` varchar(256),
               `gamename` varchar(256),
