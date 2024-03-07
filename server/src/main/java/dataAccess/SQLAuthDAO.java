@@ -44,6 +44,17 @@ public class SQLAuthDAO implements AuthDAO {
     }
     @Override
     public String createAuth(String username) throws DataAccessException {
+        //check to see if the user already has an auth
+        try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE username=?")) {
+            preparedStatement.setString(1, username);
+            try (var resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    throw new DataAccessException("Error: unauthorized");
+                }
+            }
+        } catch (DataAccessException | SQLException exception) {throw new DataAccessException("Error: Already Logged In");}
+
+
         String newAuth = UUID.randomUUID().toString();
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("INSERT INTO authDataTable (username, authToken) VALUES (?, ?)")) {
             preparedStatement.setString(1, username);   //value ?
@@ -78,7 +89,7 @@ public class SQLAuthDAO implements AuthDAO {
         return false;
     }
     @Override
-    public String getUsername(String authToken) {
+    public String getUsername(String authToken) throws DataAccessException {
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM authDataTable WHERE authToken=?")) {
             preparedStatement.setString(1, authToken);
             try (var resultSet = preparedStatement.executeQuery()) {
@@ -88,7 +99,7 @@ public class SQLAuthDAO implements AuthDAO {
                     throw new DataAccessException("Error: unauthorized");
                 }
             }
-        } catch (DataAccessException | SQLException exception) {throw new RuntimeException(exception);}
+        } catch (DataAccessException | SQLException exception) {throw new DataAccessException("Error: unauthorized");}
     }
 
     @Override

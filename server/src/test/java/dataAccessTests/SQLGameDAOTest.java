@@ -1,25 +1,36 @@
 package dataAccessTests;
 
-import dataAccess.*;
+import dataAccess.DataAccessException;
+import dataAccess.GameDAO;
+import dataAccess.SQLGameDAO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import passoffTests.testClasses.TestException;
 
-public class SQLGameDAOTest {
-    AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO gameDAO = new SQLGameDAO();
-    UserDAO userDAO = new SQLUserDAO();
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public void SQLAuthDAOTests() throws DataAccessException {
-    }
+public class SQLGameDAOTest {
+    GameDAO gameDAO = new SQLGameDAO();
 
     public SQLGameDAOTest() throws DataAccessException {
     }
 
     @BeforeEach
     public void setup() throws TestException, DataAccessException {
-        authDAO.clear();
-        authDAO.createAuth("Johny");
-        authDAO.createAuth("Bill");
-        authDAO.createAuth("Sam");
+        gameDAO.clear();
+        gameDAO.createGame("F");
+        gameDAO.createGame("U");
+        gameDAO.createGame("N");
+
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Clear Service")
+    public void clearService() throws Exception {
+        gameDAO.clear();
+        assertEquals(false, gameDAO.doesGameExist(1));
     }
 }
