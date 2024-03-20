@@ -21,12 +21,13 @@ public class ServerFacade {
     }
 
     //Create Request to send to the server
-    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
+    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String header) throws Exception {
         try {
             URL url = (new URI(serverID + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("Authorization", header);
 
             //Creates the Body for Request
             if (request != null) {

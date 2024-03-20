@@ -1,7 +1,6 @@
 package ui;
 
-import model.AuthData;
-import model.UserData;
+import model.*;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -113,7 +112,7 @@ public class ClientMenu {
 
             if (Arrays.stream(inputData).count() == 3) {
                 try {
-                    authData = serverFacade.makeRequest("POST", "/session", new UserData(inputData[1], inputData[2], null), AuthData.class);
+                    authData = serverFacade.makeRequest("POST", "/session", new UserData(inputData[1], inputData[2], null), AuthData.class, null);
                     System.out.println("Logged in as " + inputData[1]);
 
                     userStatus = "LOGGED_IN";
@@ -130,12 +129,13 @@ public class ClientMenu {
 
     void register(String input){
         System.out.println("Registering User");
+
         //cut up input
         String[] inputData = input.split(" ");
 
         if (Arrays.stream(inputData).count() == 4) {
             try {
-                authData = serverFacade.makeRequest("POST", "/user", new UserData(inputData[1], inputData[2], inputData[3]), AuthData.class);
+                authData = serverFacade.makeRequest("POST", "/user", new UserData(inputData[1], inputData[2], inputData[3]), AuthData.class, null);
                 System.out.println("Logged in as " + inputData[1]);
 
                 userStatus = "LOGGED_IN";
@@ -154,15 +154,38 @@ public class ClientMenu {
     void logout(){
         System.out.println("Logging out");
 
+        try {
+            serverFacade.makeRequest("DELETE", "/session", null, null, authData.authToken());
+            System.out.println("Logged Out");
 
-        userStatus = "LOGGED_OUT";
-        identity = "Prelogin UI";
+            userStatus = "LOGGED_OUT";
+            identity = "Prelogin UI";
+        } catch (Exception exeption) {
+            returnErrorMessage(exeption.getMessage());;
+        }
     }
 
 
 
     void create(String input){
         System.out.println("creating game");
+
+
+        //cut up input
+        String[] inputData = input.split(" ");
+
+
+        if (Arrays.stream(inputData).count() == 2) {
+            try {
+                GameData gameData = serverFacade.makeRequest("POST", "/game", new GameData(0, null, null, inputData[1], null), GameData.class, authData.authToken());
+                System.out.println("new Game Created:" + inputData[1]);
+                System.out.println("Game ID:" + gameData.gameID());
+            } catch (Exception exeption) {
+                returnErrorMessage(exeption.getMessage());;
+            }
+        } else {
+            System.out.println("Invalid Input: Create <GAMENAME>");
+        }
     }
 
 
@@ -170,6 +193,19 @@ public class ClientMenu {
 
     void list(){
         System.out.println("listing games");
+        try {
+            GameData[] gameData = serverFacade.makeRequest("GET", "/game", null, GameData[].class, authData.authToken());
+
+            for (int i = 0; Arrays.stream(gameData).count() > i; i++) {
+                System.out.println("GameID:" + gameData[i].gameID() + " Game Name:" + gameData[i].gameName());
+                System.out.println("   White user:" + gameData[i].whiteUsername());
+                System.out.println("   Black user:" + gameData[i].blackUsername());
+            }
+
+        } catch (Exception exeption) {
+            returnErrorMessage(exeption.getMessage());;
+        }
+
     }
 
 
@@ -177,6 +213,11 @@ public class ClientMenu {
 
     void join(String input){
         System.out.println("joining game");
+
+        //cut up input
+        String[] inputData = input.split(" ");
+
+
     }
 
 
@@ -185,5 +226,10 @@ public class ClientMenu {
 
     void observe(String input){
         System.out.println("observing");
+
+        //cut up input
+        String[] inputData = input.split(" ");
+
+
     }
 }
