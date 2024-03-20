@@ -38,13 +38,15 @@ public class ServerFacade {
                 }
             }
 
+            //sends request to server
             http.connect();
 
+            //assures response is 200 / valid
             if (http.getResponseCode() != 200) {
                 throw new Exception("failure: " + http.getResponseCode());
             }
 
-
+            //This is where we create the file to be returned
             T response = null;
             if (http.getContentLength() < 0) {
                 try (InputStream respBody = http.getInputStream()) {

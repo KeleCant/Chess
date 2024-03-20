@@ -108,9 +108,6 @@ public class ClientMenu {
 
 
 
-
-
-
         private void returnErrorMessage (String errorCode){
             if (errorCode.contains("400"))
                 System.out.println("Error: bad request");
@@ -123,6 +120,8 @@ public class ClientMenu {
             else
                 System.out.println("Error: " + errorCode);
         }
+
+
 
         void login (String input){
             System.out.println("Logging in");
@@ -170,7 +169,6 @@ public class ClientMenu {
 
 
 
-
     void logout(){
         System.out.println("Logging out");
 
@@ -210,7 +208,6 @@ public class ClientMenu {
 
 
 
-
     void list(){
         System.out.println("listing games");
         try {
@@ -228,7 +225,6 @@ public class ClientMenu {
         }
 
     }
-
 
 
 
@@ -257,8 +253,6 @@ public class ClientMenu {
             System.out.println("Invalid Input: Join <ID> [WHITE|BLACK|<empty>]");
         }
     }
-
-
 
 
 
