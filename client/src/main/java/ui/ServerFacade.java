@@ -11,13 +11,10 @@ import java.net.URI;
 import java.net.URL;
 
 public class ServerFacade {
-    private String authToken;
     private String serverID;
-    int port;
 
     //this is where functionality begins from the client side. This will make requests
     public ServerFacade(int port) {
-        this.port = port;
         this.serverID = "http://localhost:" + port + "/";
     }
 
