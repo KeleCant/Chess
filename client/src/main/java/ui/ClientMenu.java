@@ -98,7 +98,12 @@ public class ClientMenu {
             System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
             //Display the Board
             BoardUI display = new BoardUI(currentGame);
+            display.displayWhite();
+            System.out.print("\n");
+            display.displayBlack();
 
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
         }
 
 
