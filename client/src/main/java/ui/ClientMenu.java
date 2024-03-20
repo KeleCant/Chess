@@ -96,9 +96,15 @@ public class ClientMenu {
         //
         public void gamePlayClient () {
             System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
-
+            //Display the Board
+            BoardUI display = new BoardUI(currentGame);
 
         }
+
+
+
+
+
 
         private void returnErrorMessage (String errorCode){
             if (errorCode.contains("400"))
