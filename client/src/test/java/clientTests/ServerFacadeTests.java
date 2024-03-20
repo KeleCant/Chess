@@ -109,7 +109,7 @@ public class ServerFacadeTests {
     @DisplayName("Client Create")
     public void clientCreate() throws Exception {
         clientMenu.create("create theGame");
-        assertEquals(true, gameDAO.doesGameExist(1), "game not read properly");
+        assertEquals(true, gameDAO.doesGameExist(1));
     }
 
     @Test
