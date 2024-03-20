@@ -1,12 +1,19 @@
 package ui;
 
-import model.*;
+import model.AuthData;
+import model.GameData;
+import model.UserData;
+import requests.JoinGameRequest;
+import results.ListGamesResult;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
+
 public class ClientMenu {
     AuthData authData;
+    GameData currentGame;
     String identity = "Prelogin UI"; //"Postlogin UI" & "Gameplay UI" | "Exit"
     String userStatus = "LOGGED_OUT"; //"LOGGED_IN"
     private ServerFacade serverFacade;
@@ -88,6 +95,8 @@ public class ClientMenu {
 
         //
         public void gamePlayClient () {
+            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+
 
         }
 
@@ -194,16 +203,17 @@ public class ClientMenu {
     void list(){
         System.out.println("listing games");
         try {
-            GameData[] gameData = serverFacade.makeRequest("GET", "/game", null, GameData[].class, authData.authToken());
+            ListGamesResult gameData = serverFacade.makeRequest("GET", "/game", null, ListGamesResult.class, authData.authToken());
 
-            for (int i = 0; Arrays.stream(gameData).count() > i; i++) {
-                System.out.println("GameID:" + gameData[i].gameID() + " Game Name:" + gameData[i].gameName());
-                System.out.println("   White user:" + gameData[i].whiteUsername());
-                System.out.println("   Black user:" + gameData[i].blackUsername());
+            for (GameData thisGame : gameData.games()){
+                System.out.println("GameID:" + thisGame.gameID() + " Game Name:" + thisGame.gameName());
+                System.out.println("   White user:" + thisGame.whiteUsername());
+                System.out.println("   Black user:" + thisGame.blackUsername());
             }
 
         } catch (Exception exeption) {
-            returnErrorMessage(exeption.getMessage());;
+            //throw new RuntimeException(exeption);
+            returnErrorMessage(exeption.getMessage());
         }
 
     }
@@ -212,12 +222,29 @@ public class ClientMenu {
 
 
     void join(String input){
-        System.out.println("joining game");
+        System.out.println("Checking Game ID");
 
         //cut up input
         String[] inputData = input.split(" ");
 
 
+        if (Arrays.stream(inputData).count() == 3 && (inputData[2].contains("WHITE") || inputData[2].contains("BLACK"))) {
+            try {
+                serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), inputData[2]), null, authData.authToken());
+                System.out.println(authData.username() + " Joined Game as " + inputData[2]);
+            } catch (Exception exeption) {
+                returnErrorMessage(exeption.getMessage());;
+            }
+        } else if (Arrays.stream(inputData).count() == 2){
+            try {
+                serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), null), null, authData.authToken());
+                System.out.println("Game ID is Valid");
+            } catch (Exception exeption) {
+                returnErrorMessage(exeption.getMessage());;
+            }
+        } else {
+            System.out.println("Invalid Input: Join <ID> [WHITE|BLACK|<empty>]");
+        }
     }
 
 
@@ -230,6 +257,28 @@ public class ClientMenu {
         //cut up input
         String[] inputData = input.split(" ");
 
+        if (Arrays.stream(inputData).count() == 2) {
+            //Check to see if Game ID exits
+            try {
+                serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), null), null, authData.authToken());
 
+            } catch (Exception exeption) {
+                returnErrorMessage(exeption.getMessage());;
+            }
+
+            try {
+                ListGamesResult gameData = serverFacade.makeRequest("GET", "/game", null, ListGamesResult.class, authData.authToken());
+
+                for (GameData thisGame : gameData.games()){
+                    if (thisGame.gameID() == parseInt(inputData[1]))
+                        currentGame = thisGame;
+                }
+                identity = "Gameplay UI";
+            } catch (Exception exeption) {
+                returnErrorMessage(exeption.getMessage());;
+            }
+        } else {
+            System.out.println("Invalid Input: Observe <ID>");
+        }
     }
 }
