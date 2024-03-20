@@ -12,7 +12,7 @@ import java.util.Scanner;
 import static java.lang.Integer.parseInt;
 
 public class ClientMenu {
-    AuthData authData;
+    public AuthData authData;
     GameData currentGame;
     String identity = "Prelogin UI"; //"Postlogin UI" & "Gameplay UI" | "Exit"
     String userStatus = "LOGGED_OUT"; //"LOGGED_IN"
@@ -123,7 +123,7 @@ public class ClientMenu {
 
 
 
-        void login (String input){
+        public void login (String input){
             System.out.println("Logging in");
 
             //cut up input
@@ -146,7 +146,7 @@ public class ClientMenu {
 
 
 
-    void register(String input){
+    public void register(String input){
         System.out.println("Registering User");
 
         //cut up input
@@ -169,7 +169,7 @@ public class ClientMenu {
 
 
 
-    void logout(){
+    public void logout(){
         System.out.println("Logging out");
 
         try {
@@ -185,7 +185,7 @@ public class ClientMenu {
 
 
 
-    void create(String input){
+    public void create(String input){
         System.out.println("creating game");
 
 
@@ -208,7 +208,7 @@ public class ClientMenu {
 
 
 
-    void list(){
+    public void list(){
         System.out.println("listing games");
         try {
             ListGamesResult gameData = serverFacade.makeRequest("GET", "/game", null, ListGamesResult.class, authData.authToken());
@@ -228,7 +228,7 @@ public class ClientMenu {
 
 
 
-    void join(String input){
+    public void join(String input){
         System.out.println("Checking Game ID");
 
         //cut up input
@@ -256,7 +256,7 @@ public class ClientMenu {
 
 
 
-    void observe(String input){
+    public void observe(String input){
         System.out.println("observing");
 
         //cut up input

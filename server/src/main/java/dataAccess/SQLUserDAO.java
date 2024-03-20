@@ -96,7 +96,7 @@ public class SQLUserDAO implements UserDAO {
             if (resultSet.next()) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 var realPassword = resultSet.getString("password");
-                if (!encoder.matches(password, realPassword))    //fixme this will never work because password is encoded
+                if (!encoder.matches(password, realPassword))
                     throw new DataAccessException("Error: unauthorized");
             } else {
                 //if no username was found
