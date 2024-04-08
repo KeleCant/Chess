@@ -17,6 +17,7 @@ public class ClientMenu {
     String identity = "Prelogin UI"; //"Postlogin UI" & "Gameplay UI" | "Exit"
     String userStatus = "LOGGED_OUT"; //"LOGGED_IN"
     private ServerFacade serverFacade;
+    String currentColor = "NULL";
 
     public ClientMenu(ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -95,15 +96,61 @@ public class ClientMenu {
 
         //
         public void gamePlayClient () {
+            //join game message
+            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+            if (!currentColor.contains("NULL")){
+                System.out.println("Welcome " + authData.username() + " you are currently playing as " + currentColor);
+            } else {
+                System.out.println("Welcome " + authData.username() + " you are currently Observing");
+            }
+            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+
+
+//            System.out.print("[" + userStatus + "] >>>> ");
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+            if (input.contains("Help") || input.contains("help")) {
+                System.out.println("Redraw - Redraws the chess board");
+                System.out.println("Leave - returns user to lobby");
+                System.out.println("Move - makes a move");
+                System.out.println("Resign - The user forfeits the game and the game is over");
+                System.out.println("Highlight - Shows legal moves");
+                System.out.println("Help - list possible commands");
+            }  else if (input.contains("Redraw") || input.contains("redraw")) {
+
+            }  else if (input.contains("Leave") || input.contains("leave")) {
+                identity = "Postlogin UI";
+            }  else if (input.contains("Move") || input.contains("move")) {
+
+            }  else if (input.contains("Resign") || input.contains("resign")) {
+
+            }  else if (input.contains("Highlight") || input.contains("highlight")) {
+
+            } else {
+                System.out.println("Invalid Input - Type \"Help\" for a list of commands or \"Quit\" to exit the program.");
+            }
+
+
+
+
+
+
             System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
             //Display the Board
             BoardUI display = new BoardUI(currentGame);
-            display.displayWhite();
-            System.out.print("\n");
-            display.displayBlack();
-
-            Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
+            if (currentGame.whiteUsername()!=null){
+                if (currentGame.whiteUsername().contains(authData.username())){
+                    display.displayWhite();
+                }
+            } else if (currentGame.blackUsername()!=null) {
+                if (currentGame.blackUsername().contains(authData.username())){
+                    display.displayBlack();
+                }
+            } else if (!currentGame.blackUsername().contains(authData.username()) & currentGame.whiteUsername().contains(authData.username())) {
+                display.displayWhite();
+                System.out.print("\n");
+                display.displayBlack();
+            }
         }
 
 
@@ -239,6 +286,28 @@ public class ClientMenu {
             try {
                 serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), inputData[2]), null, authData.authToken());
                 System.out.println(authData.username() + " Joined Game as " + inputData[2]);
+                //identity = "Gameplay UI";
+
+                ListGamesResult gameData = serverFacade.makeRequest("GET", "/game", null, ListGamesResult.class, authData.authToken());
+
+                for (GameData thisGame : gameData.games()){
+                    if (thisGame.gameID() == parseInt(inputData[1]))
+                        currentGame = thisGame;
+                }
+
+                //Set game position
+                if (inputData[2].contains("WHITE")){
+                    currentColor = "WHITE";
+                } else if (inputData[2].contains("BLACK")){
+                    currentColor = "BLACK";
+                } else {
+                    currentColor = "NULL";
+                }
+
+                identity = "Gameplay UI";
+
+
+
             } catch (Exception exeption) {
                 returnErrorMessage(exeption.getMessage());;
             }
