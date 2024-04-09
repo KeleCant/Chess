@@ -33,7 +33,7 @@ public class Connection {
     }
 
     //
-    //  gameMap
+    //  gameList
     //
     public Set<String> getUsers(int gameID) {
         return gameList.get(gameID);
@@ -48,6 +48,10 @@ public class Connection {
         gameList.get(gameID).add(authToken);
     }
 
+
+    //
+    //Message Sending Commands
+    //
     public void updateGameBoard(int gameID, ChessGame game) throws IOException {
 
         //Creates gson message to send to users

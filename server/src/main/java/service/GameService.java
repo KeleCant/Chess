@@ -6,12 +6,20 @@ import results.*;
 
 public class GameService {
 
-    static AuthDAO authDAO;
-    static GameDAO gameDAO;
+    private static AuthDAO authDAO;
+    private static GameDAO gameDAO;
 
     public GameService(AuthDAO authDAO, GameDAO gameDAO){
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
+    }
+
+    public AuthDAO getAuthDAO(){
+        return authDAO;
+    }
+
+    public GameDAO getGameDAO(){
+        return gameDAO;
     }
  
     //Gives a list of all games.
