@@ -1,7 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import dataAccess.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,7 +15,7 @@ public class ServerFacade {
 
     //this is where functionality begins from the client side. This will make requests
     public ServerFacade(int port) {
-        this.serverID = "http://localhost:" + port + "/";
+        serverID = "http://localhost:" + port + "/";
     }
 
     //Create Request to send to the server

@@ -3,8 +3,8 @@ package ui;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import requests.JoinGameRequest;
-import results.ListGamesResult;
+import requests.*;
+import results.*;
 
 import java.util.Arrays;
 import java.util.Scanner;
