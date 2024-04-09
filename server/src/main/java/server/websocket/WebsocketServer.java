@@ -1,18 +1,23 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 public class WebsocketServer {
+    private Connection playerConnectionList = new Connection();
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
 
-        //receive message and translate from json
-        UserGameCommand.CommandType commandType = null;
+        ////receive message and translate from json // Set up variables
+        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        UserGameCommand.CommandType commandType = command.getCommandType();
 
-        //Verify Authorization
-
+        //create a connection if user joins // Verify Authorization
+        if ((commandType == UserGameCommand.CommandType.JOIN_PLAYER) || (commandType == UserGameCommand.CommandType.JOIN_OBSERVER)) {
+            playerConnectionList.addConnection(command.getAuthString(), session);
+        }
 
         //Check and run command
         if (commandType == UserGameCommand.CommandType.JOIN_PLAYER){

@@ -39,7 +39,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         //websocket
-        Spark.webSocket("/connect", WebsocketServer.class);    //fixme Phase 6
+        Spark.webSocket("/connect", WebsocketServer.class);
 
         //Endpoints
         Spark.delete("/db", this::clearHandler);
