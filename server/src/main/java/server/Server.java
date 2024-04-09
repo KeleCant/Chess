@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.*;
 import requests.*;
+import server.websocket.*;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -37,6 +38,10 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        //websocket
+        Spark.webSocket("/connect", WebsocketServer.class);    //fixme Phase 6
+
+        //Endpoints
         Spark.delete("/db", this::clearHandler);
         Spark.post("/user", this::registerHandler);
         Spark.post("/session", this::loginHandler);
