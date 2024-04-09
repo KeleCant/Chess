@@ -3,21 +3,22 @@ package server.websocket;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.*;
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import service.GameService;
 import service.UserService;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
+import webSocketMessages.userCommands.JoinObserverMessage;
 import webSocketMessages.userCommands.JoinPlayerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
 import java.util.Objects;
 
+@WebSocket
 public class WebsocketServer {
     private final Connection playerConnectionList = new Connection();
     private AuthDAO authDAO = new SQLAuthDAO();
@@ -62,48 +63,64 @@ public class WebsocketServer {
     //
     // Websocket end points
     //
-    private void joinPlayer(Session session, String message){
+    private void joinPlayer(Session session, String message) throws IOException {
         //translate String from gson
         JoinPlayerMessage joinMessage = new Gson().fromJson(message, JoinPlayerMessage.class);
 
         //Use service to join
         try {
-            //Check to see if the user can login to this game
-            //if empty Yes
-            //if username match Yes
-            //if username doesn't match No
-
             //Retrieve GameList
-            GameData gameData;
+            GameData gameData = new GameData(-1,null,null,null,null);
             for (GameData game : gameDAO.listGame())
                 if (game.gameID() == joinMessage.getGameID())
                      gameData = game;
 
-            //Retrieve Username
-            joinMessage.getAuthString();
-
-
-            //Check to see if the position is empty
-
-            //Check to see if this user occupies the Color
-
-            if ((joinMessage.getColor() == ChessGame.TeamColor.WHITE && !Objects.equals(authData.username(), gameData.whiteUsername()))
-                    || (joinMessage.getColor() == ChessGame.TeamColor.BLACK && !Objects.equals(authData.username(), gameData.blackUsername()))
-                    || joinMessage.getColor() == null) {
-                ErrorMessage errorResponse = new ErrorMessage("That team slot is already taken");
-                session.getRemote().sendString(new Gson().toJson(errorResponse));
+            if (gameData.gameID() == -1){
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game ID does not exist")));
                 return;
             }
 
-            playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
-            LoadGameMessage loadGameResponse = new LoadGameMessage(gameData.game());
-            String msgToSend = new Gson().toJson(loadGameResponse);
+            //Retrieve Username
+            String username = authDAO.getUsername(joinMessage.getAuthString());
 
-            session.getRemote().sendString(msgToSend);
-
-            String broadcastMessage = String.format("%s joined the game as %s", authData.username(), joinMessage.getColor());
-            playerConnectionList.broadcast(broadcastMessage, joinMessage.getAuthString(), joinMessage.getGameID());
-
+            //Check to see if the color is empty
+            if (joinMessage.getColor() == null){
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("No Color was Given")));
+                return;
+            }
+            //Empty -> White
+//            else if (gameData.whiteUsername() == null && joinMessage.getColor() == ChessGame.TeamColor.WHITE){
+//                playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
+//                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameData.game())));
+//                String newMessage = username + " joined the game as White";
+//                playerConnectionList.broadcast(newMessage, joinMessage.getAuthString(), joinMessage.getGameID());
+//            }
+            //Empty -> Black
+//            else if (gameData.blackUsername() == null && joinMessage.getColor() == ChessGame.TeamColor.BLACK) {
+//                playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
+//                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameData.game())));
+//                String newMessage = username + " joined the game as Black";
+//                playerConnectionList.broadcast(newMessage, joinMessage.getAuthString(), joinMessage.getGameID());
+//            }
+            //Username Matches White
+            else if (Objects.equals(username, gameData.whiteUsername()) && joinMessage.getColor() == ChessGame.TeamColor.WHITE){
+                playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
+                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameData.game())));
+                String newMessage = username + " joined the game as White";
+                playerConnectionList.broadcast(newMessage, joinMessage.getAuthString(), joinMessage.getGameID());
+            }
+            //Username Matches Black
+            else if (Objects.equals(username, gameData.blackUsername()) && joinMessage.getColor() == ChessGame.TeamColor.BLACK){
+                playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
+                session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameData.game())));
+                String newMessage = username + " joined the game as Black";
+                playerConnectionList.broadcast(newMessage, joinMessage.getAuthString(), joinMessage.getGameID());
+            }
+            //If no condition is met throw an error
+            else {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("")));
+                return;
+            }
         } catch (DataAccessException e) {
             ErrorMessage errorResponse = new ErrorMessage("Error");
             session.getRemote().sendString(new Gson().toJson(errorResponse));
@@ -112,8 +129,41 @@ public class WebsocketServer {
         }
     }
 
-    private void joinObserver(Session session, String message){
+    private void joinObserver(Session session, String message) throws IOException, DataAccessException {
 
+        //translate from gson
+        JoinObserverMessage joinMessage = new Gson().fromJson(message, JoinObserverMessage.class);
+
+        //Retrieve Username
+        if (!authDAO.getAuth(joinMessage.getAuthString())){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Invalid AuthToken")));
+            return;
+        }
+        String username = authDAO.getUsername(joinMessage.getAuthString());
+
+        //Retrieve GameList
+        GameData gameData = new GameData(-1,null,null,null,null);
+        for (GameData game : gameDAO.listGame())
+            if (game.gameID() == joinMessage.getGameID())
+                gameData = game;
+        //check to make sure ID isn't bad
+        if (gameData.gameID() == -1){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game ID does not exist")));
+            return;
+        }
+
+        try {
+
+            playerConnectionList.addUser(joinMessage.getGameID(), joinMessage.getAuthString());
+            session.getRemote().sendString(new Gson().toJson(new LoadGameMessage(gameData.game())));
+            String newMessage = username + " joined the game as an OBSERVER";
+            playerConnectionList.broadcast(newMessage, joinMessage.getAuthString(), gameData.gameID());
+
+        } catch (DataAccessException e) {
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Error")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void makeMove(Session session, String message){
