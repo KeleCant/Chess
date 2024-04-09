@@ -12,10 +12,7 @@ import spark.Response;
 import spark.Spark;
 
 public class Server {
-    //for local Storage
-//    private final AuthDAO authDAO = new AuthDAOMemory();
-//    private final GameDAO gameDAO = new GameDAOMemory();
-//    private final UserDAO userDAO = new UserDAOMemory();
+    //for local Storage //    private final AuthDAO authDAO = new AuthDAOMemory(); //    private final GameDAO gameDAO = new GameDAOMemory(); //    private final UserDAO userDAO = new UserDAOMemory();
 
     //for sequal storage
     private AuthDAO authDAO;
