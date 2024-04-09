@@ -1,7 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
-import dataAccess.*;
+import dataAccess.DataAccessException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
