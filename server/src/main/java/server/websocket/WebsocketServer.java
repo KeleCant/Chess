@@ -1,7 +1,6 @@
 package server.websocket;
 
 import chess.ChessGame;
-import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.*;
@@ -13,10 +12,7 @@ import service.GameService;
 import service.UserService;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
-import webSocketMessages.userCommands.JoinObserverMessage;
-import webSocketMessages.userCommands.JoinPlayerMessage;
-import webSocketMessages.userCommands.MakeMoveMessage;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -181,6 +177,11 @@ public class WebsocketServer {
 
         try {
 
+            if (gameData.game().isGameOver()) {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("This game is over.")));
+                return;
+            }
+
             if ((Objects.equals(gameData.whiteUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.WHITE)){
                 gameData.game().makeMove(makeMoveRequest.getMove());
             } else if ((Objects.equals(gameData.blackUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.BLACK)){
@@ -204,11 +205,84 @@ public class WebsocketServer {
         }
     }
 
-    private void leave(Session session, String message){
+    private void leave(Session session, String message) throws IOException, DataAccessException {
 
+        LeaveMessage leaveMessage = new Gson().fromJson(message, LeaveMessage.class);
+
+        //Verrify auth token & retrieve username
+        if (!authDAO.getAuth(leaveMessage.getAuthString())){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Invalid AuthToken")));
+            return;
+        }
+        String username = authDAO.getUsername(leaveMessage.getAuthString());
+
+        //Retrieve GameList
+        GameData gameData = new GameData(-1,null,null,null,null);
+        for (GameData game : gameDAO.listGame())
+            if (game.gameID() == leaveMessage.getGameID())
+                gameData = game;
+        //check to make sure ID isn't bad
+        if (gameData.gameID() == -1){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game ID does not exist")));
+            return;
+        }
+
+        try {
+
+            playerConnectionList.removeUser(leaveMessage.getAuthString(), gameData.gameID());
+            String msgToSend = username + " left the game.";
+            playerConnectionList.broadcast(msgToSend, leaveMessage.getAuthString(), gameData.gameID());
+
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void resign(Session session, String message){
+    private void resign(Session session, String message) throws IOException, DataAccessException {
 
+        ResignMessage resignMessage = new Gson().fromJson(message, ResignMessage.class);
+
+        //Verrify auth token & retrieve username
+        if (!authDAO.getAuth(resignMessage.getAuthString())){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Invalid AuthToken")));
+            return;
+        }
+        String username = authDAO.getUsername(resignMessage.getAuthString());
+
+        //Retrieve GameList
+        GameData gameData = new GameData(-1,null,null,null,null);
+        for (GameData game : gameDAO.listGame())
+            if (game.gameID() == resignMessage.getGameID())
+                gameData = game;
+        //check to make sure ID isn't bad
+        if (gameData.gameID() == -1){
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game ID does not exist")));
+            return;
+        }
+
+        try {
+            if (!Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username)) {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You can't resign as an observer")));
+                return;
+            }
+
+            if (gameData.game().isGameOver()) {
+                session.getRemote().sendString(new Gson().toJson(new ErrorMessage("This game is over.")));
+                return;
+            }
+
+            gameData.game().endGame();
+
+            gameDAO.updateGameData(gameData.gameID(), gameData);
+
+            String msgToSend = username + " resigned from the game.";
+            playerConnectionList.broadcast(msgToSend, null, gameData.gameID());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

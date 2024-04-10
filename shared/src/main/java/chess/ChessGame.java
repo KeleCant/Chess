@@ -13,10 +13,19 @@ import java.util.Objects;
 public class ChessGame {
     private ChessBoard gameBoard = new ChessBoard();
     private TeamColor teamTurn;
+    private Boolean isGameOver = false;
 
     public ChessGame() {
         gameBoard.resetBoard();
         teamTurn = TeamColor.WHITE;
+    }
+
+    public void endGame(){
+        isGameOver = true;
+    }
+
+    public boolean isGameOver(){
+        return isGameOver;
     }
 
     public TeamColor getTeamTurn() { //return Which team's turn it is

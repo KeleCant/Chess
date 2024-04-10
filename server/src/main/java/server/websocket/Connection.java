@@ -48,6 +48,11 @@ public class Connection {
         gameList.get(gameID).add(authToken);
     }
 
+    public void removeUser(String authToken, int gameID){
+        gameList.get(gameID).remove(authToken);
+        userConnectionList.remove(authToken);
+    }
+
 
     //
     //Message Sending Commands
@@ -59,7 +64,8 @@ public class Connection {
 
         //sends the new board to each user
         for (String user: getUsers(gameID))
-            getSession(user).getRemote().sendString(gsonMessage);
+            if (getSession(user).isOpen())
+                getSession(user).getRemote().sendString(gsonMessage);
 
     }
 
