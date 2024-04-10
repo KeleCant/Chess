@@ -1,11 +1,18 @@
 package ui;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import requests.JoinGameRequest;
 import results.ListGamesResult;
-import server.websocket.WebsocketServer;
+import webSocket.webSocketClient;
+import webSocketMessages.userCommands.*;
+import dataAccess.DataAccessException;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -19,9 +26,10 @@ public class ClientMenu {
     String userStatus = "LOGGED_OUT"; //"LOGGED_IN"
 
     private ServerFacade serverFacade;
-    private WebsocketServer websocketServer;
+    private webSocketClient webSocketClient;
 
     String currentColor = "NULL";
+    ChessGame.TeamColor teamColor;
 
     public ClientMenu(ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
@@ -99,7 +107,7 @@ public class ClientMenu {
         }
 
         //
-        public void gamePlayClient () {
+        public void gamePlayClient () throws Exception {
             //join game message
             System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
             if (!currentColor.contains("NULL")){
@@ -116,7 +124,7 @@ public class ClientMenu {
             if (input.contains("Help") || input.contains("help")) {
                 System.out.println("Redraw - Redraws the chess board");
                 System.out.println("Leave - returns user to lobby");
-                System.out.println("Move - makes a move");
+                System.out.println("Move <Start Position> <End Position> - makes a move");
                 System.out.println("Resign - The user forfeits the game and the game is over");
                 System.out.println("Highlight - Shows legal moves");
                 System.out.println("Help - list possible commands");
@@ -125,7 +133,7 @@ public class ClientMenu {
             }  else if (input.contains("Leave") || input.contains("leave")) {
                 leave();
             }  else if (input.contains("Move") || input.contains("move")) {
-                move();
+                move(input);
             }  else if (input.contains("Resign") || input.contains("resign")) {
                 resign();
             }  else if (input.contains("Highlight") || input.contains("highlight")) {
@@ -302,8 +310,10 @@ public class ClientMenu {
                 //Set game position
                 if (inputData[2].contains("WHITE")){
                     currentColor = "WHITE";
+                    teamColor = ChessGame.TeamColor.WHITE;
                 } else if (inputData[2].contains("BLACK")){
                     currentColor = "BLACK";
+                    teamColor = ChessGame.TeamColor.BLACK;
                 } else {
                     currentColor = "NULL";
                 }
@@ -311,8 +321,9 @@ public class ClientMenu {
                 identity = "Gameplay UI";
 
                 //fixme Establish websocket connection
-
-
+                BoardUI display = new BoardUI(currentGame);
+                webSocketClient = new webSocketClient(serverFacade.getServerID(), display, currentColor);
+                webSocketClient.send(new Gson().toJson(new JoinPlayerMessage(authData.authToken(),parseInt(inputData[1]), teamColor)));
 
             } catch (Exception exeption) {
                 returnErrorMessage(exeption.getMessage());;
@@ -356,6 +367,12 @@ public class ClientMenu {
 
                 identity = "Gameplay UI";
                 //fixme Establish websocket connection
+                currentColor = "Null";
+                BoardUI display = new BoardUI(currentGame);
+                webSocketClient = new webSocketClient(serverFacade.getServerID(), display, currentColor);
+                webSocketClient.send(new Gson().toJson(new JoinObserverMessage(authData.authToken(),parseInt(inputData[1]))));
+
+
 
             } catch (Exception exeption) {
                 returnErrorMessage(exeption.getMessage());;
@@ -374,22 +391,112 @@ public class ClientMenu {
     //
 
     private void redraw(){
-
+        webSocketClient.redrawBoard();
     }
 
-    private void leave(){
-
+    private void leave() throws Exception {
+        webSocketClient.send(new Gson().toJson(new LeaveMessage(authData.authToken(), currentGame.gameID())));
     }
 
-    private void move(){
+    private void move(String input) throws Exception {
+        //break up string inputData[1] start Pos, inputData[2] end pos, inputData[3] promotion piece
+        String[] inputData = input.split(" ");
 
+        //validate input
+        if (inputData.length < 3 && inputData.length > 4){
+            System.out.println("Invalid input, it needs to have at least 3 characters");
+            System.out.println("Move <Start Position> <End Position> <Promotion Piece> - makes a move");
+        } else {
+            //convert String to Start
+            try {
+                ChessPosition startPos = positionConverter(inputData[1]);
+                ChessPosition endPos = positionConverter(inputData[2]);
+                ChessPiece.PieceType promtionPiece = null;
+                if (inputData.length == 4)
+                    promtionPiece = pieceConverter(inputData[3]);
+
+                ChessMove newMove = new ChessMove(startPos, endPos, promtionPiece);
+
+                //test move to see if its valid
+                if (currentGame.game().validMoves(startPos).contains(endPos)) {
+                    webSocketClient.send(new Gson().toJson(new MakeMoveMessage(authData.authToken(), newMove, currentGame.gameID())));
+                } else {
+                    System.out.println("This move is invalid");
+                }
+
+            } catch(Exception e) {
+                System.out.println("Invalid input, it needs to have at least 3 characters");
+                System.out.println("Move <Start Position> <End Position> <Promotion Piece> - makes a move");
+                System.out.println("<Start Position> and <End Position> must contain a number 1-8 and a leter A-B");
+                System.out.println("Example: Move 2A 3A");
+            }
+        }
     }
 
-    private void resign(){
-
+    private void resign() throws Exception {
+        webSocketClient.send(new Gson().toJson(new ResignMessage(authData.authToken(), currentGame.gameID())));
     }
 
     private void highlight(){
+        webSocketClient.highlightMoves();
+    }
 
+    private ChessPiece.PieceType pieceConverter(String input){
+        if (input.contains("QUEEN"))
+            return ChessPiece.PieceType.QUEEN;
+        else if (input.contains(("ROOK")))
+            return ChessPiece.PieceType.ROOK;
+        else if (input.contains(("BISHOP")))
+            return ChessPiece.PieceType.BISHOP;
+        else if (input.contains(("KNIGHT")))
+            return ChessPiece.PieceType.KNIGHT;
+        else
+            return null;
+    }
+
+    private ChessPosition positionConverter(String input) throws DataAccessException {
+        int row;
+        int col;
+
+        if (input.contains("1"))
+            row = 1;
+        else if (input.contains("2"))
+            row = 2;
+        else if (input.contains("3"))
+            row = 3;
+        else if (input.contains("4"))
+            row = 4;
+        else if (input.contains("5"))
+            row = 5;
+        else if (input.contains("6"))
+            row = 6;
+        else if (input.contains("7"))
+            row = 7;
+        else if (input.contains("8"))
+            row = 8;
+        else
+            throw new DataAccessException("No Letter Found")
+
+            if (input.contains("A"))
+                col = 1;
+            else if (input.contains("B"))
+                col = 2;
+            else if (input.contains("C"))
+                col = 3;
+            else if (input.contains("D"))
+                col = 4;
+            else if (input.contains("E"))
+                col = 5;
+            else if (input.contains("F"))
+                col = 6;
+            else if (input.contains("G"))
+                col = 7;
+            else if (input.contains("H"))
+                col = 8;
+            else
+                throw new DataAccessException("No Letter Found");
+
+
+        return new ChessPosition(row, col);
     }
 }

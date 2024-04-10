@@ -176,13 +176,12 @@ public class WebsocketServer {
         }
 
         try {
-            //se if game is over
+
             if (gameData.game().isGameOver()) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("This game is over.")));
                 return;
             }
 
-            //makes move on chess board
             if ((Objects.equals(gameData.whiteUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.WHITE)){
                 gameData.game().makeMove(makeMoveRequest.getMove());
             } else if ((Objects.equals(gameData.blackUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.BLACK)){
@@ -265,7 +264,7 @@ public class WebsocketServer {
         }
 
         try {
-            if (gameData.whiteUsername() != username && gameData.blackUsername() != username) {
+            if (!Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username)) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You can't resign as an observer")));
                 return;
             }

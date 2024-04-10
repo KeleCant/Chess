@@ -46,7 +46,13 @@ public class webSocketClient {
         });
     }
 
+    public void send(String message) throws Exception {
+        session.getBasicRemote().sendText(message);
+    }
 
+    public void onOpen(Session session, EndpointConfig endpointConfig) {}
+    public void onClose(Session session, EndpointConfig endpointConfig) {}
+    public void onError(Session session, EndpointConfig endpointConfig) {}
 
     private void loadGame(String message) { //redraws game
         LoadGameMessage loadGameResponse = new Gson().fromJson(message, LoadGameMessage.class);
@@ -57,14 +63,6 @@ public class webSocketClient {
     public void redrawBoard(){
         gameBoard.drawBoard(team);
     }
-
-
-    public void send(String msg) throws Exception {this.session.getBasicRemote().sendText(msg);}
-    public void onOpen(Session session, EndpointConfig endpointConfig) {}
-    public void onClose(Session session, EndpointConfig endpointConfig) {}
-    public void onError(Session session, EndpointConfig endpointConfig) {}
-
-
 
     public void highlightMoves() {
         gameBoard.highlightMoves();
