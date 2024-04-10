@@ -230,6 +230,7 @@ public class WebsocketServer {
         try {
 
             playerConnectionList.removeUser(leaveMessage.getAuthString(), gameData.gameID());
+            playerConnectionList.removeConnection(leaveMessage.getAuthString());
             String msgToSend = username + " left the game.";
             playerConnectionList.broadcast(msgToSend, leaveMessage.getAuthString(), gameData.gameID());
 

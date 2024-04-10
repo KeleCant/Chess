@@ -19,8 +19,4 @@ public class JoinPlayerMessage extends UserGameCommand {
     public ChessGame.TeamColor getColor() {
         return playerColor;
     }
-
-    public void setColor(ChessGame.TeamColor newColor) {
-        playerColor = newColor;
-    }
 }

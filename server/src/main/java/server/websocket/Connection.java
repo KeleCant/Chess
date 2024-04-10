@@ -39,10 +39,6 @@ public class Connection {
         return gameList.get(gameID);
     }
 
-    public Map<Integer, Set<String>> getGameList() {
-        return gameList;
-    }
-
     public void addUser(int gameID, String authToken) {
         gameList.computeIfAbsent(gameID, k -> new HashSet<>());
         gameList.get(gameID).add(authToken);
