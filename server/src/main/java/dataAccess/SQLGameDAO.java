@@ -86,7 +86,6 @@ public class SQLGameDAO implements GameDAO {
     }
     @Override
     public void updateGame(String authToken, int gameID, String clientColor, AuthDAO authDAO) throws DataAccessException {
-
         //get the game info
         GameData game;
         try (var con = DatabaseManager.getConnection(); var preparedStatement = con.prepareStatement("SELECT * FROM gameDataTable WHERE gameID=?")) {
@@ -107,7 +106,8 @@ public class SQLGameDAO implements GameDAO {
         }
         else if (clientColor.equals("WHITE")) {   //add White player
             //check to see if color is taken
-            if (game.whiteUsername() != null)
+
+            if (game.whiteUsername() != null && !game.whiteUsername().contains(authDAO.getUsername(authToken)))
                 throw new DataAccessException("Error: already taken");
 
             game = new GameData(game.gameID(), authDAO.getUsername(authToken), game.blackUsername(), game.gameName(), game.game());
@@ -115,7 +115,7 @@ public class SQLGameDAO implements GameDAO {
         }
         else if (clientColor.equals("BLACK")) {  //add Black player
             //check to see if color is taken
-            if (game.blackUsername() != null)
+            if (game.blackUsername() != null && !game.blackUsername().contains(authDAO.getUsername(authToken)))
                 throw new DataAccessException("Error: already taken");
 
             game = new GameData(game.gameID(), game.whiteUsername(), authDAO.getUsername(authToken), game.gameName(), game.game());

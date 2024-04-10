@@ -2,7 +2,6 @@ package webSocket;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.GameData;
 import ui.BoardUI;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
@@ -12,7 +11,7 @@ import webSocketMessages.serverMessages.ServerMessage;
 import javax.websocket.*;
 import java.net.URI;
 
-public class webSocketClient {
+public class webSocketClient extends Endpoint {
     private Session session;
     private BoardUI gameBoard;
     private ChessGame game;
@@ -24,10 +23,12 @@ public class webSocketClient {
         this.team = team;
 
         url = url.replace("http", "ws") + "connect";
-        System.out.println(url);
-        URI uri = new URI(url);
+        //System.out.println("Connecting to Websocket URL: " + url);
+
+        //session = ContainerProvider.getWebSocketContainer().connectToServer(this, new URI(url));
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        session = container.connectToServer(this, uri);
+        session = container.connectToServer(this, new URI(url));
+
 
         session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {

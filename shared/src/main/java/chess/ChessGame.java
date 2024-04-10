@@ -214,6 +214,7 @@ public class ChessGame {
         }
 
         //if no conditions are met return true
+        isGameOver = true;
         return true;
     }
 
@@ -253,6 +254,7 @@ public class ChessGame {
             }
         }
         //fixme This code only looks at the kings position. If I was to fully Impliment a solution I would need the system to check every piece's moves to see if they can block the check.
+        isGameOver = true;
         return true;
     }
 

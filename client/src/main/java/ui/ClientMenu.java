@@ -108,15 +108,6 @@ public class ClientMenu {
 
         //
         public void gamePlayClient() {
-            //join game message
-            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
-            if (!currentColor.contains("NULL")){
-                System.out.println("Welcome " + authData.username() + " you are currently playing as " + currentColor);
-            } else {
-                System.out.println("Welcome " + authData.username() + " you are currently Observing");
-            }
-            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
-
 
 //            System.out.print("[" + userStatus + "] >>>> ");
             Scanner scanner = new Scanner(System.in);
@@ -141,28 +132,22 @@ public class ClientMenu {
             } else {
                 System.out.println("Invalid Input - Type \"Help\" for a list of commands or \"Quit\" to exit the program.");
             }
-
-
-
-
-
-
-            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
-            //Display the Board
-            BoardUI display = new BoardUI(currentGame);
-            if (currentGame.whiteUsername()!=null){
-                if (currentGame.whiteUsername().contains(authData.username())){
-                    display.displayWhite();
-                }
-            } else if (currentGame.blackUsername()!=null) {
-                if (currentGame.blackUsername().contains(authData.username())){
-                    display.displayBlack();
-                }
-            } else if (!currentGame.blackUsername().contains(authData.username()) & currentGame.whiteUsername().contains(authData.username())) {
-                display.displayWhite();
-                System.out.print("\n");
-                display.displayBlack();
-            }
+//            System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+//            //Display the Board
+//            BoardUI display = new BoardUI(currentGame);
+//            if (currentGame.whiteUsername()!=null){
+//                if (currentGame.whiteUsername().contains(authData.username())){
+//                    display.displayWhite();
+//                }
+//            } else if (currentGame.blackUsername()!=null) {
+//                if (currentGame.blackUsername().contains(authData.username())){
+//                    display.displayBlack();
+//                }
+//            } else if (!currentGame.blackUsername().contains(authData.username()) & currentGame.whiteUsername().contains(authData.username())) {
+//                display.displayWhite();
+//                System.out.print("\n");
+//                display.displayBlack();
+//            }
         }
 
 
@@ -288,7 +273,7 @@ public class ClientMenu {
 
 
     public void join(String input){
-        System.out.println("Checking Game ID");
+        //System.out.println("Checking Game ID");
 
         //cut up input
         String[] inputData = input.split(" ");
@@ -296,6 +281,7 @@ public class ClientMenu {
 
         if (Arrays.stream(inputData).count() == 3 && (inputData[2].contains("WHITE") || inputData[2].contains("BLACK"))) {
             try {
+                //System.out.println("Checkpoint 1");
                 serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), inputData[2]), null, authData.authToken());
                 System.out.println(authData.username() + " Joined Game as " + inputData[2]);
                 //identity = "Gameplay UI";
@@ -318,12 +304,17 @@ public class ClientMenu {
                     currentColor = "NULL";
                 }
 
-                identity = "Gameplay UI";
-
                 //fixme Establish websocket connection
                 BoardUI display = new BoardUI(currentGame);
                 webSocketClient = new webSocketClient(serverFacade.getServerID(), display, currentColor);
                 webSocketClient.send(new Gson().toJson(new JoinPlayerMessage(authData.authToken(),parseInt(inputData[1]), teamColor)));
+
+                //Greet User
+                System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+                System.out.println("Welcome " + authData.username() + " you are currently playing as " + currentColor);
+                new BoardUI(currentGame).drawBoard(currentColor);
+
+                identity = "Gameplay UI";
 
             } catch (Exception exeption) {
                 returnErrorMessage(exeption.getMessage());;
@@ -343,7 +334,7 @@ public class ClientMenu {
 
 
     public void observe(String input){
-        System.out.println("observing");
+        //System.out.println("observing");
 
         //cut up input
         String[] inputData = input.split(" ");
@@ -354,6 +345,7 @@ public class ClientMenu {
                 serverFacade.makeRequest("PUT", "/game", new JoinGameRequest(parseInt(inputData[1]), null), null, authData.authToken());
 
             } catch (Exception exeption) {
+                System.out.println("error caught in HTTP Join request:");
                 returnErrorMessage(exeption.getMessage());;
             }
 
@@ -365,16 +357,22 @@ public class ClientMenu {
                         currentGame = thisGame;
                 }
 
-                identity = "Gameplay UI";
                 //fixme Establish websocket connection
                 currentColor = "Null";
                 BoardUI display = new BoardUI(currentGame);
                 webSocketClient = new webSocketClient(serverFacade.getServerID(), display, currentColor);
+
                 webSocketClient.send(new Gson().toJson(new JoinObserverMessage(authData.authToken(),parseInt(inputData[1]))));
 
 
+                System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
+                System.out.println("Welcome " + authData.username() + " you are currently Observing");
+                new BoardUI(currentGame).drawBoard(currentColor);
+
+                identity = "Gameplay UI";
 
             } catch (Exception exeption) {
+                System.out.println("Error Caught in Websocket:");
                 returnErrorMessage(exeption.getMessage());;
             }
         } else {
@@ -397,6 +395,8 @@ public class ClientMenu {
     private void leave() {
         try {
             webSocketClient.send(new Gson().toJson(new LeaveMessage(authData.authToken(), currentGame.gameID())));
+            System.out.println(authData.username() + " Left the Game");
+            identity = "Postlogin UI";
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
