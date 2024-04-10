@@ -107,7 +107,7 @@ public class ClientMenu {
         }
 
         //
-        public void gamePlayClient () throws Exception {
+        public void gamePlayClient() {
             //join game message
             System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
             if (!currentColor.contains("NULL")){
@@ -394,11 +394,15 @@ public class ClientMenu {
         webSocketClient.redrawBoard();
     }
 
-    private void leave() throws Exception {
-        webSocketClient.send(new Gson().toJson(new LeaveMessage(authData.authToken(), currentGame.gameID())));
+    private void leave() {
+        try {
+            webSocketClient.send(new Gson().toJson(new LeaveMessage(authData.authToken(), currentGame.gameID())));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private void move(String input) throws Exception {
+    private void move(String input) {
         //break up string inputData[1] start Pos, inputData[2] end pos, inputData[3] promotion piece
         String[] inputData = input.split(" ");
 
@@ -433,8 +437,12 @@ public class ClientMenu {
         }
     }
 
-    private void resign() throws Exception {
-        webSocketClient.send(new Gson().toJson(new ResignMessage(authData.authToken(), currentGame.gameID())));
+    private void resign() {
+        try {
+            webSocketClient.send(new Gson().toJson(new ResignMessage(authData.authToken(), currentGame.gameID())));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void highlight(){
@@ -475,7 +483,7 @@ public class ClientMenu {
         else if (input.contains("8"))
             row = 8;
         else
-            throw new DataAccessException("No Letter Found")
+            throw new DataAccessException("No Letter Found");
 
             if (input.contains("A"))
                 col = 1;
@@ -495,8 +503,6 @@ public class ClientMenu {
                 col = 8;
             else
                 throw new DataAccessException("No Letter Found");
-
-
         return new ChessPosition(row, col);
     }
 }
