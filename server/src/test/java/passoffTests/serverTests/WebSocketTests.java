@@ -161,14 +161,16 @@ public class WebSocketTests {
                 joinObserver(white.user, white.authToken, gameID, Set.of(), Set.of());
 
         //should get a load game message
-        assertLoadGameMessage(messages.get(white.user));
+        assertLoadGameMessage(messages.get(white.user));        //this is loading a game message
 
         //have player join
         messages = joinPlayer(black.user, black.authToken, gameID, ChessGame.TeamColor.BLACK,
                 Set.of(white.user), Set.of());
 
         //observer should get a notification
-        assertNotificationMessage(messages.get(white.user));
+        assertNotificationMessage(messages.get(white.user));    //fixme produces error
+        //it appears that white is not recieving a notification when black joins the game
+        //the type of message needs to be a notification
 
         //watch game
         messages =

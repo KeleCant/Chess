@@ -71,7 +71,7 @@ public class Connection {
         //Updates every other User
         for (String user: getUsers(gameID))
             if (!user.equals(authToken))
-                getSession(user).getRemote().sendString(gsonMessage);
-
+                if (getSession(user).isOpen())
+                    getSession(user).getRemote().sendString(gsonMessage);
     }
 }
