@@ -66,11 +66,9 @@ public class Connection {
         for (String user: getUsers(gameID))
             if (getSession(user).isOpen())
                 getSession(user).getRemote().sendString(gsonMessage);
-
     }
 
     public void broadcast(String message, String authToken, int gameID) throws DataAccessException, IOException {
-
         //Creates gson Message
         String gsonMessage = new Gson().toJson(new NotificationMessage(message));
 
