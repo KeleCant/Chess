@@ -20,6 +20,4 @@ public class MakeMoveMessage extends UserGameCommand {
     public ChessMove getMove() {
         return move;
     }
-
-    //Translate ChessPosition
 }

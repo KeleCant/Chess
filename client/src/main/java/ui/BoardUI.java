@@ -11,6 +11,20 @@ public class BoardUI {
         this.gameData = gameData;
     }
 
+    public void sendMessage(String Message){
+        System.out.println(Message);
+    }
+
+
+
+    public void drawBoard(String teamColor){
+        if (teamColor.contains("BLACK")){
+            displayBlack();
+        } else{
+            displayWhite();
+        }
+    }
+
     public void displayWhite(){
         String[][] stringBoard = stringlist(gameData.game().getBoard().getGameBoard());
 
@@ -84,5 +98,7 @@ public class BoardUI {
         return EscapeSequences.EMPTY;
     }
 
-
+    public void highlightMoves(){
+        //fixme
+    }
 }

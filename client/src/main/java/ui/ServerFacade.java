@@ -18,6 +18,10 @@ public class ServerFacade {
         serverID = "http://localhost:" + port + "/";
     }
 
+    public String getServerID(){
+        return serverID;
+    }
+
     //Create Request to send to the server
     public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String header) throws Exception {
         try {

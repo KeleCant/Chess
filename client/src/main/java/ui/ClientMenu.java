@@ -5,6 +5,7 @@ import model.GameData;
 import model.UserData;
 import requests.JoinGameRequest;
 import results.ListGamesResult;
+import server.websocket.WebsocketServer;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -16,7 +17,10 @@ public class ClientMenu {
     GameData currentGame;
     String identity = "Prelogin UI"; //"Postlogin UI" & "Gameplay UI" | "Exit"
     String userStatus = "LOGGED_OUT"; //"LOGGED_IN"
+
     private ServerFacade serverFacade;
+    private WebsocketServer websocketServer;
+
     String currentColor = "NULL";
 
     public ClientMenu(ServerFacade serverFacade) {
@@ -117,15 +121,15 @@ public class ClientMenu {
                 System.out.println("Highlight - Shows legal moves");
                 System.out.println("Help - list possible commands");
             }  else if (input.contains("Redraw") || input.contains("redraw")) {
-
+                redraw();
             }  else if (input.contains("Leave") || input.contains("leave")) {
-                identity = "Postlogin UI";
+                leave();
             }  else if (input.contains("Move") || input.contains("move")) {
-
+                move();
             }  else if (input.contains("Resign") || input.contains("resign")) {
-
+                resign();
             }  else if (input.contains("Highlight") || input.contains("highlight")) {
-
+                highlight();
             } else {
                 System.out.println("Invalid Input - Type \"Help\" for a list of commands or \"Quit\" to exit the program.");
             }
@@ -306,6 +310,8 @@ public class ClientMenu {
 
                 identity = "Gameplay UI";
 
+                //fixme Establish websocket connection
+
 
 
             } catch (Exception exeption) {
@@ -347,12 +353,43 @@ public class ClientMenu {
                     if (thisGame.gameID() == parseInt(inputData[1]))
                         currentGame = thisGame;
                 }
+
                 identity = "Gameplay UI";
+                //fixme Establish websocket connection
+
             } catch (Exception exeption) {
                 returnErrorMessage(exeption.getMessage());;
             }
         } else {
             System.out.println("Invalid Input: Observe <ID>");
         }
+    }
+
+
+
+
+
+    //
+    //game INTERFACE
+    //
+
+    private void redraw(){
+
+    }
+
+    private void leave(){
+
+    }
+
+    private void move(){
+
+    }
+
+    private void resign(){
+
+    }
+
+    private void highlight(){
+
     }
 }

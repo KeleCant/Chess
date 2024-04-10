@@ -176,12 +176,13 @@ public class WebsocketServer {
         }
 
         try {
-
+            //se if game is over
             if (gameData.game().isGameOver()) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("This game is over.")));
                 return;
             }
 
+            //makes move on chess board
             if ((Objects.equals(gameData.whiteUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.WHITE)){
                 gameData.game().makeMove(makeMoveRequest.getMove());
             } else if ((Objects.equals(gameData.blackUsername(), username) && gameData.game().getTeamTurn() == ChessGame.TeamColor.BLACK)){
@@ -193,8 +194,8 @@ public class WebsocketServer {
 
             gameDAO.updateGameData(gameData.gameID(), gameData);
             playerConnectionList.updateGameBoard(gameData.gameID(), gameData.game());
-            String msgToSend = username + " made a move.";
-            playerConnectionList.broadcast(msgToSend, makeMoveRequest.getAuthString(), gameData.gameID());
+            String newMessage = username + " made a move.";
+            playerConnectionList.broadcast(newMessage, makeMoveRequest.getAuthString(), gameData.gameID());
 
         } catch (DataAccessException e) {
             session.getRemote().sendString(new Gson().toJson(new ErrorMessage(e.getMessage())));
@@ -231,8 +232,8 @@ public class WebsocketServer {
 
             playerConnectionList.removeUser(leaveMessage.getAuthString(), gameData.gameID());
             playerConnectionList.removeConnection(leaveMessage.getAuthString());
-            String msgToSend = username + " left the game.";
-            playerConnectionList.broadcast(msgToSend, leaveMessage.getAuthString(), gameData.gameID());
+            String newMessage = username + " left the game.";
+            playerConnectionList.broadcast(newMessage, leaveMessage.getAuthString(), gameData.gameID());
 
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
@@ -264,7 +265,7 @@ public class WebsocketServer {
         }
 
         try {
-            if (!Objects.equals(gameData.whiteUsername(), username) && !Objects.equals(gameData.blackUsername(), username)) {
+            if (gameData.whiteUsername() != username && gameData.blackUsername() != username) {
                 session.getRemote().sendString(new Gson().toJson(new ErrorMessage("You can't resign as an observer")));
                 return;
             }
@@ -278,8 +279,8 @@ public class WebsocketServer {
 
             gameDAO.updateGameData(gameData.gameID(), gameData);
 
-            String msgToSend = username + " resigned from the game.";
-            playerConnectionList.broadcast(msgToSend, null, gameData.gameID());
+            String newMessage = username + " resigned from the game.";
+            playerConnectionList.broadcast(newMessage, null, gameData.gameID());
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
