@@ -170,7 +170,7 @@ public class WebsocketServer {
             if (game.gameID() == makeMoveRequest.getGameID())
                 gameData = game;
         //check to make sure ID isn't bad
-        if (gameData.gameID() == -1){
+        if (gameData.gameID() == -1) {
             session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game ID does not exist")));
             return;
         }

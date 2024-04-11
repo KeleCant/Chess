@@ -15,6 +15,8 @@ import webSocketMessages.userCommands.*;
 import dataAccess.DataAccessException;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Scanner;
 
 import static java.lang.Integer.parseInt;
@@ -43,11 +45,15 @@ public class ClientMenu {
 
         //listen for an input
         while (identity != "Exit") {
-            System.out.print("[" + userStatus + "] >>>> ");
-            if (identity == "Prelogin UI")
+            //System.out.print("[" + userStatus + "] >>>> ");
+            if (identity == "Prelogin UI") {
+                System.out.print("[" + userStatus + "] >>>> ");
                 preLoginClient();
-            else if (identity == "Postlogin UI")
+            }
+            else if (identity == "Postlogin UI") {
+                System.out.print("[" + userStatus + "] >>>> ");
                 postLoginClient();
+            }
             else if (identity == "Gameplay UI")
                 gamePlayClient();
         }
@@ -117,7 +123,7 @@ public class ClientMenu {
                 System.out.println("Leave - returns user to lobby");
                 System.out.println("Move <Start Position> <End Position> - makes a move");
                 System.out.println("Resign - The user forfeits the game and the game is over");
-                System.out.println("Highlight - Shows legal moves");
+                System.out.println("Highlight <Piece Position> - Shows legal moves");
                 System.out.println("Help - list possible commands");
             }  else if (input.contains("Redraw") || input.contains("redraw")) {
                 redraw();
@@ -128,7 +134,7 @@ public class ClientMenu {
             }  else if (input.contains("Resign") || input.contains("resign")) {
                 resign();
             }  else if (input.contains("Highlight") || input.contains("highlight")) {
-                highlight();
+                highlight(input);
             } else {
                 System.out.println("Invalid Input - Type \"Help\" for a list of commands or \"Quit\" to exit the program.");
             }
@@ -312,7 +318,7 @@ public class ClientMenu {
                 //Greet User
                 System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
                 System.out.println("Welcome " + authData.username() + " you are currently playing as " + currentColor);
-                new BoardUI(currentGame).drawBoard(currentColor);
+                //new BoardUI(currentGame).drawBoard(currentColor);
 
                 identity = "Gameplay UI";
 
@@ -367,7 +373,7 @@ public class ClientMenu {
 
                 System.out.println("Now Displaying Game(" + currentGame.gameID() + "): " + currentGame.gameName());
                 System.out.println("Welcome " + authData.username() + " you are currently Observing");
-                new BoardUI(currentGame).drawBoard(currentColor);
+                //new BoardUI(currentGame).drawBoard(currentColor);
 
                 identity = "Gameplay UI";
 
@@ -406,34 +412,47 @@ public class ClientMenu {
         //break up string inputData[1] start Pos, inputData[2] end pos, inputData[3] promotion piece
         String[] inputData = input.split(" ");
 
-        //validate input
-        if (inputData.length < 3 && inputData.length > 4){
-            System.out.println("Invalid input, it needs to have at least 3 characters");
-            System.out.println("Move <Start Position> <End Position> <Promotion Piece> - makes a move");
-        } else {
-            //convert String to Start
-            try {
-                ChessPosition startPos = positionConverter(inputData[1]);
-                ChessPosition endPos = positionConverter(inputData[2]);
-                ChessPiece.PieceType promtionPiece = null;
-                if (inputData.length == 4)
-                    promtionPiece = pieceConverter(inputData[3]);
-
-                ChessMove newMove = new ChessMove(startPos, endPos, promtionPiece);
-
-                //test move to see if its valid
-                if (currentGame.game().validMoves(startPos).contains(endPos)) {
-                    webSocketClient.send(new Gson().toJson(new MakeMoveMessage(authData.authToken(), newMove, currentGame.gameID())));
-                } else {
-                    System.out.println("This move is invalid");
-                }
-
-            } catch(Exception e) {
+        //make sure the game is not over
+        if (!currentGame.game().isGameOver()){
+            //validate input
+            if (inputData.length < 3 && inputData.length > 4){
                 System.out.println("Invalid input, it needs to have at least 3 characters");
                 System.out.println("Move <Start Position> <End Position> <Promotion Piece> - makes a move");
-                System.out.println("<Start Position> and <End Position> must contain a number 1-8 and a leter A-B");
-                System.out.println("Example: Move 2A 3A");
+            } else {
+                //convert String to Start
+                try {
+                    ChessPosition startPos = positionConverter(inputData[1]);
+                    ChessPosition endPos = positionConverter(inputData[2]);
+                    ChessPiece.PieceType promtionPiece = null;
+                    if (inputData.length == 4)
+                        promtionPiece = pieceConverter(inputData[3]);
+
+                    ChessMove newMove = new ChessMove(startPos, endPos, promtionPiece);
+
+                    //test move to see if its valid
+                    Collection<ChessMove> moveList = new HashSet<>();
+                    moveList = currentGame.game().validMoves(startPos);
+
+                    //validate move before sending it
+                    //System.out.println(moveList);
+                    //System.out.println(newMove);
+
+                    if (moveList.contains(newMove))
+                        webSocketClient.send(new Gson().toJson(new MakeMoveMessage(authData.authToken(), newMove, currentGame.gameID())));
+                    else
+                        System.out.println("Invalid Move");
+
+                    //board isn't updating after each move
+
+                } catch (Exception e) {
+                    System.out.println("Invalid input, it needs to have at least 3 characters");
+                    System.out.println("Move <Start Position> <End Position> <Promotion Piece> - makes a move");
+                    System.out.println("<Start Position> and <End Position> must contain a number 1-8 and a leter A-B");
+                    System.out.println("Example: Move 2A 3A");
+                }
             }
+        } else{
+            System.out.println("You cannot make a move, this Game is over");
         }
     }
 
@@ -445,8 +464,22 @@ public class ClientMenu {
         }
     }
 
-    private void highlight(){
-        webSocketClient.highlightMoves();
+    private void highlight(String input){
+        String[] inputData = input.split(" ");
+
+        if (inputData.length == 2) {
+            try {
+                ChessPosition pos = positionConverter(inputData[1]);
+                webSocketClient.highlightMoves(pos);
+            } catch (Exception e){
+                System.out.println("Input incorrect: make sure the is a letter A-B and a number 1-8 present");
+                System.out.println("Ex. highlight A3");
+            }
+        } else {
+            System.out.println("Invalid input, make sure you input is 2 characters");
+            System.out.println("Highlight <Piece Position> - Shows legal moves");
+            System.out.println("Ex. highlight A3");
+        }
     }
 
     private ChessPiece.PieceType pieceConverter(String input){
@@ -485,24 +518,24 @@ public class ClientMenu {
         else
             throw new DataAccessException("No Letter Found");
 
-            if (input.contains("A"))
-                col = 1;
-            else if (input.contains("B"))
-                col = 2;
-            else if (input.contains("C"))
-                col = 3;
-            else if (input.contains("D"))
-                col = 4;
-            else if (input.contains("E"))
-                col = 5;
-            else if (input.contains("F"))
-                col = 6;
-            else if (input.contains("G"))
-                col = 7;
-            else if (input.contains("H"))
-                col = 8;
-            else
-                throw new DataAccessException("No Letter Found");
+        if (input.contains("A"))
+            col = 8;
+        else if (input.contains("B"))
+            col = 7;
+        else if (input.contains("C"))
+            col = 6;
+        else if (input.contains("D"))
+            col = 5;
+        else if (input.contains("E"))
+            col = 4;
+        else if (input.contains("F"))
+            col = 3;
+        else if (input.contains("G"))
+            col = 2;
+        else if (input.contains("H"))
+            col = 1;
+        else
+            throw new DataAccessException("No Letter Found");
         return new ChessPosition(row, col);
     }
 }

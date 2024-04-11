@@ -1,6 +1,7 @@
 package webSocket;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import ui.BoardUI;
 import webSocketMessages.serverMessages.ErrorMessage;
@@ -57,15 +58,17 @@ public class webSocketClient extends Endpoint {
 
     private void loadGame(String message) { //redraws game
         LoadGameMessage loadGameResponse = new Gson().fromJson(message, LoadGameMessage.class);
-
-        loadGameResponse.getGame();
+        gameBoard.updateGame(loadGameResponse.getGame());
+        System.out.println();
+        gameBoard.drawBoard(team);
+        System.out.print("\n[LOGGED_IN] >>>> ");
     }
 
     public void redrawBoard(){
         gameBoard.drawBoard(team);
     }
 
-    public void highlightMoves() {
-        gameBoard.highlightMoves();
+    public void highlightMoves(ChessPosition pos) {
+        gameBoard.highlightMoves(pos, team);
     }
 }

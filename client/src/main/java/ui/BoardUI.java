@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import model.GameData;
 
 public class BoardUI {
@@ -15,6 +16,9 @@ public class BoardUI {
         System.out.println(Message);
     }
 
+    public void updateGame(ChessGame newGame){
+        gameData = new GameData(gameData.gameID(),gameData.whiteUsername(),gameData.blackUsername(),gameData.gameName(),newGame);
+    }
 
 
     public void drawBoard(String teamColor){
@@ -98,7 +102,40 @@ public class BoardUI {
         return EscapeSequences.EMPTY;
     }
 
-    public void highlightMoves(){
-        //fixme
+    public void highlightMoves(ChessPosition pos, String team) {
+        if (team.contains("BLACK")){
+            highlightBlack(pos);
+        } else{
+            highlightWhite(pos);
+        }
     }
+
+    public void highlightWhite(ChessPosition pos){
+        String[][] stringBoard = stringlist(gameData.game().getBoard().getGameBoard());
+
+        //top row
+        System.out.println(EscapeSequences.EMPTY+ " A" + EscapeSequences.EMPTY + "B" + EscapeSequences.EMPTY + "C" + EscapeSequences.EMPTY + "D" + EscapeSequences.EMPTY + "E" + EscapeSequences.EMPTY + "F" + EscapeSequences.EMPTY + "G" + EscapeSequences.EMPTY + "H");
+        for (int i = 7; i >= 0; i--){
+            System.out.print(i + 1 + " |");
+            for (int j = 7; j >= 0; j--){
+                System.out.print(stringBoard[i][j] + "|");
+            }
+            System.out.print("\n");
+        }
+    }
+
+    public void highlightBlack(ChessPosition pos){
+        String[][] stringBoard = stringlist(gameData.game().getBoard().getGameBoard());
+
+        //top row
+        System.out.println(EscapeSequences.EMPTY+ " H" + EscapeSequences.EMPTY + "G" + EscapeSequences.EMPTY + "F" + EscapeSequences.EMPTY + "E" + EscapeSequences.EMPTY + "D" + EscapeSequences.EMPTY + "C" + EscapeSequences.EMPTY + "B" + EscapeSequences.EMPTY + "A");
+        for (int i = 0; i < 8; i++){
+            System.out.print(i+1 + " |");
+            for (int j = 0; j < 8; j++){
+                System.out.print(stringBoard[i][j] + "|");
+            }
+            System.out.print("\n");
+        }
+    }
+
 }
