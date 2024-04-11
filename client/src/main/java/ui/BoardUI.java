@@ -1,9 +1,15 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
+
+import java.util.Collection;
+
+import static ui.EscapeSequences.ANSI_RED_BACKGROUND;
+import static ui.EscapeSequences.ANSI_RESET;
 
 public class BoardUI {
     private GameData gameData;
@@ -112,13 +118,23 @@ public class BoardUI {
 
     public void highlightWhite(ChessPosition pos){
         String[][] stringBoard = stringlist(gameData.game().getBoard().getGameBoard());
+        Collection<ChessMove> moves = gameData.game().validMoves(pos);
 
         //top row
         System.out.println(EscapeSequences.EMPTY+ " A" + EscapeSequences.EMPTY + "B" + EscapeSequences.EMPTY + "C" + EscapeSequences.EMPTY + "D" + EscapeSequences.EMPTY + "E" + EscapeSequences.EMPTY + "F" + EscapeSequences.EMPTY + "G" + EscapeSequences.EMPTY + "H");
-        for (int i = 7; i >= 0; i--){
+        for (int i = 7; i >= 0; i--){   //for row
             System.out.print(i + 1 + " |");
-            for (int j = 7; j >= 0; j--){
-                System.out.print(stringBoard[i][j] + "|");
+            for (int j = 7; j >= 0; j--){   //for column
+                boolean positionPresent = false;
+                for (ChessMove movePos : moves)
+                    if (movePos.getEndPosition().getRow() == i+1 && movePos.getEndPosition().getColumn() == j+1)
+                        positionPresent = true;
+
+                if (positionPresent){
+                    System.out.print(ANSI_RED_BACKGROUND + stringBoard[i][j] + ANSI_RESET + "|");
+                } else {
+                    System.out.print(stringBoard[i][j] + "|");
+                }
             }
             System.out.print("\n");
         }
@@ -126,13 +142,23 @@ public class BoardUI {
 
     public void highlightBlack(ChessPosition pos){
         String[][] stringBoard = stringlist(gameData.game().getBoard().getGameBoard());
+        Collection<ChessMove> moves = gameData.game().validMoves(pos);
 
         //top row
         System.out.println(EscapeSequences.EMPTY+ " H" + EscapeSequences.EMPTY + "G" + EscapeSequences.EMPTY + "F" + EscapeSequences.EMPTY + "E" + EscapeSequences.EMPTY + "D" + EscapeSequences.EMPTY + "C" + EscapeSequences.EMPTY + "B" + EscapeSequences.EMPTY + "A");
         for (int i = 0; i < 8; i++){
             System.out.print(i+1 + " |");
             for (int j = 0; j < 8; j++){
-                System.out.print(stringBoard[i][j] + "|");
+                boolean positionPresent = false;
+                for (ChessMove movePos : moves)
+                    if (movePos.getEndPosition().getRow() == i+1 && movePos.getEndPosition().getColumn() == j+1)
+                        positionPresent = true;
+
+                if (positionPresent){
+                    System.out.print(ANSI_RED_BACKGROUND + stringBoard[i][j] + ANSI_RESET + "|");
+                } else {
+                    System.out.print(stringBoard[i][j] + "|");
+                }
             }
             System.out.print("\n");
         }
